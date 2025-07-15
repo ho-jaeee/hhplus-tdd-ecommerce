@@ -1,3 +1,5 @@
+```mermaid
+
 sequenceDiagram
 
     participant Client
@@ -23,3 +25,5 @@ sequenceDiagram
         end
     end
     API-->>Client: 결과 응답
+
+```

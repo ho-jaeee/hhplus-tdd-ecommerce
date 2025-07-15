@@ -1,3 +1,5 @@
+```mermaid
+
 sequenceDiagram
 
 
@@ -63,3 +65,5 @@ sequenceDiagram
         UI-->>Client: 충전 완료 및 잔액 표시
 
     end
+
+```
