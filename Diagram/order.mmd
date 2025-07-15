@@ -1,0 +1,43 @@
+sequenceDiagram
+    participant Client
+    participant OrderController
+    participant OrderService
+    participant ProductService
+    participant CouponService
+    participant UserService
+    participant UserHistoryService
+    participant OrderHistoryService
+    participant ProductHistoryService
+    participant ExternalPlatform
+
+    Client->>OrderController: 주문 요청 (userId, 상품ID+수량, 쿠폰ID)
+    OrderController->>OrderService: 주문 처리 시작
+
+    OrderService->>ProductService: 재고 확인
+    alt 재고 부족
+        OrderService-->>OrderController: 실패 응답
+    else
+        OrderService->>CouponService: 쿠폰 유효성 확인
+        alt 유효함
+            CouponService-->>OrderService: 할인 금액 반환
+        else
+            OrderService->>OrderService: 원래 금액 확정
+        end
+
+        OrderService->>UserService: 포인트 차감 요청
+        alt 포인트 부족
+            OrderService-->>OrderController: 실패 응답
+        else
+            UserService->>UserService: 포인트 차감
+            UserService->>UserHistoryService: 포인트 사용 이력 저장
+
+            OrderService->>OrderService: 주문 확정
+            OrderService->>OrderHistoryService: 주문 이력 저장
+
+            OrderService->>ProductService: 재고 차감
+            OrderService->>ProductHistoryService: 상품주문 이력 저장
+
+            OrderService->>ExternalPlatform: 주문 데이터 전송
+            OrderService-->>OrderController: 결제 성공 응답
+        end
+    end
