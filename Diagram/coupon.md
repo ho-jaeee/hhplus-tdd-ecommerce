@@ -1,4 +1,4 @@
-<pre><code>```mermaid
+```mermaid
 
 sequenceDiagram
 
@@ -27,4 +27,4 @@ sequenceDiagram
     API-->>Client: 결과 응답
 
 ```
-</code></pre>
+
