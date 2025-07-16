@@ -1,3 +1,4 @@
+```mermaid
 erDiagram
 
     PRODUCT ||--o{ PRODUCT_HISTORY : has_history
@@ -23,3 +24,4 @@ erDiagram
         long price_per_unit 
         datetime created_at
     }
+```
