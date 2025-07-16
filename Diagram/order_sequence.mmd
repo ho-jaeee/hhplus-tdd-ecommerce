@@ -27,9 +27,9 @@ sequenceDiagram
         end
 
         OrderService->>UserService: 포인트 차감 요청
-        alt 포인트 부족
+        alt 포인트 사용불가능 (부족)
             OrderService-->>OrderController: 실패 응답
-        else
+        else 포인트 사용가능
             UserService->>UserService: 포인트 차감
             UserService->>UserHistoryService: 포인트 사용 이력 저장
 
