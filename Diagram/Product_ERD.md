@@ -5,7 +5,7 @@ erDiagram
 
     %% 상품 기본 정보 테이블
     PRODUCT {
-        long product_id "제품ID" PK
+        long product_id PK "제품ID" 
         string name "제품이름"
         long price "가격"
         int quantity "수량"
