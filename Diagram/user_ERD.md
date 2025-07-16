@@ -8,7 +8,7 @@ erDiagram
 
     userHistory {
         BIGINT id PK "히스토리 ID"
-        BIGINT user_id FK "유저 ID"
+        BIGINT user_id "유저 ID"
         BIGINT amount "변동 금액"
         STRING transaction_type "CHARGE or USE"
         BIGINT update_millis "변동 시간"
