@@ -1,6 +1,7 @@
-package kr.hhplus.be.server;
+package kr.hhplus.be.server.mockCoupon;
 
 public record couponRespone(
+        String couponName,
         Long couponId,
         Long userId,
         boolean used,

@@ -1,5 +1,9 @@
-package kr.hhplus.be.server;
+package kr.hhplus.be.server.mockCoupon;
 
 
-public record couponRequest(Long userId) {}
+public record couponRequest(
+        Long userId,
+        Long couponId
+)
+{}
 
