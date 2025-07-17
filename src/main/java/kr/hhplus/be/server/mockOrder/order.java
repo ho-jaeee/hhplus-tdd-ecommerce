@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.order;
+package kr.hhplus.be.server.mockOrder;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +14,7 @@ public class order {
     @PostMapping
     public ResponseEntity<orderResponse> CreateOrder(@RequestBody orderRequest request) {
 
-        // 🔥 조건에 따른 Mock 처리
+        // 조건에 따른 Mock 처리
         if (request.quantity() > 10) {
             return ResponseEntity.ok(new orderResponse(
                     null,

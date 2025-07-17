@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.order;
+package kr.hhplus.be.server.mockOrder;
 
 public enum OrderStatus {
     CREATED,   // 주문 생성됨
