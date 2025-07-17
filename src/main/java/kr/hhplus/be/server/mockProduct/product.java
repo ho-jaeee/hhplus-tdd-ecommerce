@@ -1,4 +1,4 @@
-package kr.hhplus.be.server;
+package kr.hhplus.be.server.mockProduct;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +15,7 @@ import java.util.List;
 @Tag(name = "Product", description = "상품 관련 API")
 public class product {
 
-    @Operation(summary = "전체 상품 목록 조회", description = "상품 전체 리스트를 반환합니다.")
+    @Operation(summary = "전체 상품 목록 조회(Mock)", description = "상품 전체 리스트를 반환합니다.")
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
 
@@ -28,7 +28,7 @@ public class product {
 
         return ResponseEntity.ok(products);
     }
-    @Operation(summary = "인기 상품 조회", description = "최근 3일간 가장 많이 판매된 상품 Top 5를 반환합니다.")
+    @Operation(summary = "인기 상품 조회(Mock)", description = "최근 3일간 가장 많이 판매된 상품 Top 5를 반환합니다.")
     @GetMapping("/popular")
     public ResponseEntity<List<PopularProductResponse>> getPopularProducts() {
 

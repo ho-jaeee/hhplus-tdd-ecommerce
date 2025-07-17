@@ -1,4 +1,4 @@
-package kr.hhplus.be.server;
+package kr.hhplus.be.server.mockProduct;
 
 public record ProductResponse(
         Long productId,
