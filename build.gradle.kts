@@ -30,21 +30,32 @@ dependencyManagement {
 }
 
 dependencies {
-    // Spring
+	// Spring
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 
-    // DB
+	//스웨거
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+
+	// DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
-    // Test
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+	// Test
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	//lombok
+	compileOnly("org.projectlombok:lombok:1.18.32")
+	annotationProcessor("org.projectlombok:lombok:1.18.32")
+	testCompileOnly("org.projectlombok:lombok:1.18.32")
+	testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
+
 }
+
 
 tasks.withType<Test> {
 	useJUnitPlatform()
