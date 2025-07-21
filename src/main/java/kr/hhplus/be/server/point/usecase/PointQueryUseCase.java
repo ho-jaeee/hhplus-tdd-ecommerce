@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.point.usecase;
 
 import kr.hhplus.be.server.point.controller.dto.PointResponse;
-import kr.hhplus.be.server.point.domain.model.UserPoint;
+import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.service.PointQueryService;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,8 @@ public class PointQueryUseCase {
 
     //내부로직
     public PointResponse QueryUseCase(long userId) {
-        return pointQueryService.GetPoint(userId);
+        UserPointJPA result = pointQueryService.GetPoint(userId);
+        return PointResponse.from(result);
     }
 
 }

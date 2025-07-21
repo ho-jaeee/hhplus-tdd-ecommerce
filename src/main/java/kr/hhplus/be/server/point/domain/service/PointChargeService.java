@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.point.domain.service;
 
 
-import kr.hhplus.be.server.point.domain.model.UserPointHistory;
+import kr.hhplus.be.server.point.domain.model.UserPointHistoryJPA;
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.repository.UserPointHistoryRepository;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
@@ -20,27 +20,28 @@ public class PointChargeService {
         this.userPointHistoryRepo = userPointHistoryRepo;
     }
 
-    public long ChargePoint(long userId, long point) {
+    public UserPointJPA ChargePoint(long userId, long point) {
 
         /*현재 포인트 조회
         **계정이 없으면 새로운 계정을 만들고, 0포인트 반환함
+        **포인트 충전
         */
         UserPointJPA current = userPointRepo.selectById(userId);
+        current.charge(point);
 
-        /*포인트 충전*/
-        long charge = current.charge(point);
-        userPointRepo.insertOrUpdate(userId, charge);
+        // 포인트 업데이트
+        UserPointJPA updated = userPointRepo.insertOrUpdate(userId, current.getPoint());
 
         /*히스토리 저장*/
         userPointHistoryRepo.insert(
-                new UserPointHistory(
+                new UserPointHistoryJPA(
                         0L,
                         userId,
                         point,
-                        UserPointHistory.TransactionType.CHARGE,
+                        UserPointHistoryJPA.TransactionType.CHARGE,
                         System.currentTimeMillis()
                 )
         );
-        return charge;
+        return updated;
     }
 }

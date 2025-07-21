@@ -2,10 +2,9 @@ package kr.hhplus.be.server.pointTest;
 
 
 import kr.hhplus.be.server.point.controller.dto.PointResponse;
-import kr.hhplus.be.server.point.domain.model.UserPoint;
-import kr.hhplus.be.server.point.usecase.PointChargeUseCase;
+import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.service.PointChargeService;
-import org.junit.jupiter.api.BeforeEach;
+import kr.hhplus.be.server.point.usecase.PointChargeUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,23 +25,20 @@ public class PointChargeUseCaseTest {
     @InjectMocks
     PointChargeUseCase pointChargeUseCase;
 
-    long userId;
-    long point;
-
-    @BeforeEach
-    void setUp() {
-        userId = 1L;
-        point = 5000L;
-    }
 
     @Test
     void ChargePointSuccess() {
 
         //given
-        UserPoint current = new  UserPoint(userId, 1000L, System.currentTimeMillis());
-        UserPoint updated = current.pointCharge(point);
 
-        given(pointChargeService.ChargePoint(userId, point)).willReturn(updated);
+
+        long userId = 1L;
+        long point = 5000L;
+
+        UserPointJPA update = new  UserPointJPA(userId, 1000L, System.currentTimeMillis());
+        update.charge(point);
+
+        given(pointChargeService.ChargePoint(userId, point)).willReturn(update);
 
         // when
         PointResponse result = pointChargeUseCase.ChargeUseCase(userId, point);
@@ -56,6 +52,8 @@ public class PointChargeUseCaseTest {
     @Test
     void ChargePointNotZeroTest() {
         // given
+
+        long userId = 1234L;
         long point = 0L;
 
         // when & then
@@ -69,6 +67,7 @@ public class PointChargeUseCaseTest {
     @Test
     void ChargePointUnitTest() {
         // given
+        long userId = 1L;
         long point = 1234L;
 
         // when & then

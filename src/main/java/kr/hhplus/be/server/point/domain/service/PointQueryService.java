@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.point.domain.service;
 
-import kr.hhplus.be.server.point.domain.model.UserPoint;
+
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
 import org.springframework.stereotype.Service;
