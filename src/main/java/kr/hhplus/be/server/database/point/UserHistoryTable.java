@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.database;
+package kr.hhplus.be.server.database.point;
 
 import kr.hhplus.be.server.point.domain.model.UserPointHistoryJPA;
 import org.springframework.stereotype.Component;

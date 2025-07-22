@@ -2,7 +2,7 @@ package kr.hhplus.be.server.point.infrastructure;
 
 
 
-import kr.hhplus.be.server.database.UserTable;
+import kr.hhplus.be.server.database.point.UserTable;
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
 
