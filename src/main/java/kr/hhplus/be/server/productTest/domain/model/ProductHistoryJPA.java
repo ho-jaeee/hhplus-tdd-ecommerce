@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.product.domain.model;
+package kr.hhplus.be.server.productTest.domain.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -41,5 +41,25 @@ public class ProductHistoryJPA {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public static ProductHistoryJPA createWithoutId(
+            Long productId,
+            Long orderId,
+            ChangeType changeType,
+            int quantity,
+            String productName,
+            Long pricePerUnit
+    ) {
+        return new ProductHistoryJPA(
+                null,                  // id는 JPA에서 자동 생성
+                productId,
+                orderId,
+                changeType,
+                quantity,
+                productName,
+                pricePerUnit,
+                LocalDateTime.now()
+        );
     }
 }

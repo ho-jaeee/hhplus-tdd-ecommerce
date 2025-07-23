@@ -1,9 +1,9 @@
-package kr.hhplus.be.server.product.controller;
+package kr.hhplus.be.server.productTest.controller;
 
-import kr.hhplus.be.server.product.controller.dto.ProductResponse;
-import kr.hhplus.be.server.product.domain.model.ProductJPA;
-import kr.hhplus.be.server.product.usecase.ProductFindAllUseCase;
-import kr.hhplus.be.server.product.usecase.ProductFindUseCase;
+import kr.hhplus.be.server.productTest.controller.dto.ProductResponse;
+import kr.hhplus.be.server.productTest.domain.model.ProductJPA;
+import kr.hhplus.be.server.productTest.usecase.ProductFindAllUseCase;
+import kr.hhplus.be.server.productTest.usecase.ProductFindUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

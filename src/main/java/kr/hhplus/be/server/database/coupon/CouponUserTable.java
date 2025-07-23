@@ -23,6 +23,14 @@ public class CouponUserTable {
         return new ArrayList<>(table.values());
     }
 
+
+    public Optional<CouponUserJPA> findByUserIdAndCouponId(Long userId, Long couponId) {
+        return table.values().stream()
+                .filter(c -> c.getUserId().equals(userId) && c.getCouponId().equals(couponId))
+                .findFirst();
+    }
+
+
     public List<CouponUserJPA> findByUserId(Long userId) {
         return table.values().stream()
                 .filter(c -> c.getUserId().equals(userId))

@@ -13,5 +13,7 @@ public interface CouponUserRepository {
 
     List<CouponUserJPA> findByUserId(Long userId);
 
+    Optional<CouponUserJPA> findByUserIdAndCouponId(Long userId, Long couponId);
+
     List<CouponUserJPA> findAll();
 }

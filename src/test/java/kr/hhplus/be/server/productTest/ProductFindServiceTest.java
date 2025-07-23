@@ -1,10 +1,10 @@
-package kr.hhplus.be.server.product;
+package kr.hhplus.be.server.productTest;
 
 
-import kr.hhplus.be.server.product.domain.model.ProductJPA;
-import kr.hhplus.be.server.product.domain.repository.ProductRepository;
+import kr.hhplus.be.server.productTest.domain.model.ProductJPA;
+import kr.hhplus.be.server.productTest.domain.repository.ProductRepository;
 
-import kr.hhplus.be.server.product.domain.service.ProductFindService;
+import kr.hhplus.be.server.productTest.domain.service.ProductFindService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +48,7 @@ public class ProductFindServiceTest {
         // when
         ProductJPA result = productFindService.findProducts(productId);
 
+        // then
         assertThat(result).isNotNull();
         assertThat(result.getProductId()).isEqualTo(productId);
         assertThat(result.getName()).isEqualTo("MacBook Pro");
@@ -58,10 +59,10 @@ public class ProductFindServiceTest {
     @Test
     @DisplayName("존재하지 않는 제품 ID로 조회하면 예외 발생")
     void getProductById_fail() {
+
         // given
         Long productId = 99L;
         given(productRepository.findByProductId(productId)).willReturn(Optional.empty());
-
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> {

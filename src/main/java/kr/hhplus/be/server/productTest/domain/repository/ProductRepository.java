@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.product.domain.repository;
+package kr.hhplus.be.server.productTest.domain.repository;
 
-import kr.hhplus.be.server.product.domain.model.ProductJPA;
+import kr.hhplus.be.server.productTest.domain.model.ProductJPA;
 
 import java.util.List;
 import java.util.Optional;

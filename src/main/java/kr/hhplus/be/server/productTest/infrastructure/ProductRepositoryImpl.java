@@ -1,9 +1,8 @@
-package kr.hhplus.be.server.product.infrastructure;
+package kr.hhplus.be.server.productTest.infrastructure;
 
-import kr.hhplus.be.server.product.domain.model.ProductJPA;
-import kr.hhplus.be.server.product.domain.repository.ProductRepository;
+import kr.hhplus.be.server.productTest.domain.model.ProductJPA;
+import kr.hhplus.be.server.productTest.domain.repository.ProductRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.*;
 

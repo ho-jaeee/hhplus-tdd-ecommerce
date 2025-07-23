@@ -1,7 +1,7 @@
-package kr.hhplus.be.server.product.infrastructure;
+package kr.hhplus.be.server.productTest.infrastructure;
 
-import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
-import kr.hhplus.be.server.product.domain.repository.ProductHistoryRepository;
+import kr.hhplus.be.server.productTest.domain.model.ProductHistoryJPA;
+import kr.hhplus.be.server.productTest.domain.repository.ProductHistoryRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

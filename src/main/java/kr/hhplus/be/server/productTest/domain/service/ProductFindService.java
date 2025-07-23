@@ -1,8 +1,8 @@
-package kr.hhplus.be.server.product.domain.service;
+package kr.hhplus.be.server.productTest.domain.service;
 
-import kr.hhplus.be.server.product.domain.model.ProductJPA;
-import kr.hhplus.be.server.product.domain.repository.ProductRepository;
-import kr.hhplus.be.server.product.usecase.ProductFindUseCase;
+import kr.hhplus.be.server.productTest.domain.model.ProductJPA;
+import kr.hhplus.be.server.productTest.domain.repository.ProductRepository;
+import kr.hhplus.be.server.productTest.usecase.ProductFindUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

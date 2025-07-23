@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.product.domain.model;
+package kr.hhplus.be.server.productTest.domain.model;
 
 
 import jakarta.persistence.*;
@@ -31,9 +31,9 @@ public class ProductJPA {
     private LocalDateTime updatedAt;
 
     public void decreaseQuantity(int amount) {
-        if (this.quantity < amount) {
-            throw new IllegalStateException("재고 부족");
-        }
+//        if (this.quantity < amount) {
+//            throw new IllegalStateException("재고 부족");
+//        }
         this.quantity -= amount;
         this.updatedAt = LocalDateTime.now();
     }
@@ -41,6 +41,10 @@ public class ProductJPA {
     public void increaseQuantity(int amount) {
         this.quantity += amount;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public boolean stockCheck(int requestQuantity) {
+        return this.quantity >= requestQuantity;
     }
 
     @PrePersist

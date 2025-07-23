@@ -20,7 +20,7 @@ public class CouponUserJPA {
 
     private Long couponId;
 
-    private boolean isUsed;
+    private Boolean isUsed;
 
     private LocalDateTime usedAt;
 

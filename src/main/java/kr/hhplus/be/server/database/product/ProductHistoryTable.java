@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.database.product;
 
 
-import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
+import kr.hhplus.be.server.productTest.domain.model.ProductHistoryJPA;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.product.controller.dto;
+package kr.hhplus.be.server.productTest.controller.dto;
 
-import kr.hhplus.be.server.product.domain.model.ProductJPA;
+import kr.hhplus.be.server.productTest.domain.model.ProductJPA;
 
 public record ProductResponse(
         Long productId,
