@@ -22,12 +22,16 @@ public class UserPointJPA {
     }
 
     public long charge(long amount) {
+
         this.point += amount;
         this.updateMillis = System.currentTimeMillis();
         return this.point;
     }
 
     public long use(long amount) {
+        if (this.point < amount) {
+            throw new IllegalArgumentException("포인트가 부족합니다");
+        }
         this.point -= amount;
         this.updateMillis = System.currentTimeMillis();
         return this.point;

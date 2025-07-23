@@ -4,7 +4,7 @@ import kr.hhplus.be.server.order.domain.model.OrderJPA;
 
 public interface OrderRepository {
 
-    OrderJPA insert(OrderJPA order);
+    OrderJPA save(OrderJPA order);
 
     void update(OrderJPA order);
 

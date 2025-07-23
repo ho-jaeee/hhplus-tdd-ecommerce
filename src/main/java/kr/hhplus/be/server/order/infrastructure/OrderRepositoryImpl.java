@@ -12,7 +12,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     private OrderTable orderTable;
 
     @Override
-    public OrderJPA insert(OrderJPA order) {return orderTable.insert(order);}
+    public OrderJPA save(OrderJPA order) {return orderTable.insert(order);}
 
     @Override
     public void update(OrderJPA order) {orderTable.update(order);}

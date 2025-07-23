@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.productTest;
 
 
-import kr.hhplus.be.server.productTest.domain.model.ProductHistoryJPA;
-import kr.hhplus.be.server.productTest.domain.repository.ProductHistoryRepository;
-import kr.hhplus.be.server.productTest.domain.service.ProductHistoryService;
+import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
+import kr.hhplus.be.server.product.domain.repository.ProductHistoryRepository;
+import kr.hhplus.be.server.product.domain.service.ProductHistoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

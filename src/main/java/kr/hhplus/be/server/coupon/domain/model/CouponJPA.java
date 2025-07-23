@@ -18,7 +18,7 @@ public class CouponJPA {
 
     private String name; //쿠폰이름
 
-    private int discountAmount; //할인 금액 또는 비율
+    private int discountAmount; //할인 비율
 
     private int totalQuantity; //총 수량
 

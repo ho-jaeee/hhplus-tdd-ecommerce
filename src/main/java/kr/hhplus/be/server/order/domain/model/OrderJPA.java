@@ -39,7 +39,7 @@ public class OrderJPA {
 
 
     @PrePersist
-    public void prePersist() { // insert 초기셋팅
+    public void prePersist() { // save 초기셋팅
         this.createdAt = LocalDateTime.now();
         this.updatedAt = this.createdAt;
         if (status == null) status = OrderStatus.CREATED;
