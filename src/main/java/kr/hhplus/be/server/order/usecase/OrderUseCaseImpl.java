@@ -48,7 +48,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
             couponCheckService.checkCoupon(userId, couponId);
         }
 
-        // 3. 총 금액 계산 + 쿠폰 할인 적용
+        // 3. 총 금액 계산 + 쿠폰 할인 적용(할인율)
         long totalPrice = calculateTotalPrice(items);
         int discountPercent = (couponId != null)
                 ? couponDiscountService.getDiscountPercent(couponId)
