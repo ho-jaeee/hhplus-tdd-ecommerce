@@ -2,8 +2,11 @@ package kr.hhplus.be.server.order.controller;
 
 
 import kr.hhplus.be.server.order.controller.dto.OrderRequest;
+import kr.hhplus.be.server.order.controller.dto.OrderResponse;
 import kr.hhplus.be.server.order.domain.model.OrderJPA;
 import kr.hhplus.be.server.order.usecase.OrderUseCase;
+import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +22,9 @@ public class OrderController {
     private final OrderUseCase orderUseCase;
 
     @PostMapping
-    public ResponseEntity<OrderJPA> createOrder(@RequestBody OrderRequest request) {
-        OrderJPA order = orderUseCase.createOrder(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(order);
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request) {
+        OrderCommand command = OrderRequest.toCommand(request); // 변환은 여기서!
+        OrderResult result = orderUseCase.createOrder(command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(OrderResponse.from(result));
     }
 }

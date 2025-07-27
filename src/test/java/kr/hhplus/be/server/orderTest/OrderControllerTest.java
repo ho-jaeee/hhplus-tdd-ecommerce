@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.order.controller.OrderController;
 import kr.hhplus.be.server.order.controller.dto.OrderItemRequest;
 import kr.hhplus.be.server.order.controller.dto.OrderRequest;
-import kr.hhplus.be.server.order.domain.model.OrderJPA;
+
 import kr.hhplus.be.server.order.usecase.OrderUseCase;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
+import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,16 +40,20 @@ public class OrderControllerTest {
         );
         OrderRequest request = new OrderRequest(1L, 5L, items);
 
-        OrderJPA response = OrderJPA.builder()
-                .orderId(10001L)
-                .userId(1L)
-                .couponId(5L)
-                .totalPrice(50000L)
-                .discountedTotalPrice(45000L)
-                .status(OrderJPA.OrderStatus.PAID)
-                .build();
 
-        when(mockUseCase.createOrder(any())).thenReturn(response);
+        OrderResult result = new OrderResult(
+                10001L,
+                1L,
+                50000L,
+                45000L,
+                List.of(
+                        new OrderItemResult(10L, "상품A", 2, 30000L),
+                        new OrderItemResult(20L, "상품B", 1, 20000L)
+                ),
+                "PAID"
+        );
+
+        when(mockUseCase.createOrder(any())).thenReturn(result);
 
         OrderController controller = new OrderController(mockUseCase);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();

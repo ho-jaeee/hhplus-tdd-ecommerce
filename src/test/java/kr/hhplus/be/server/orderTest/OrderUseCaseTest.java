@@ -11,9 +11,12 @@ import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
 import kr.hhplus.be.server.order.usecase.OrderUseCaseImpl;
+import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
-import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
+import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
 import kr.hhplus.be.server.product.domain.service.ProductHistoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +43,7 @@ public class OrderUseCaseTest {
     @Mock OrderRepository orderRepository;
     @Mock OrderItemRepository orderItemRepository;
     @Mock OrderHistoryService orderHistoryService;
+    @Mock ProductDecreaseService productDecreaseService;
     @Mock ProductHistoryService productHistoryService;
 
     @InjectMocks
@@ -48,91 +52,73 @@ public class OrderUseCaseTest {
     @Test
     @DisplayName("정상 주문이 완료되면 PAID 상태를 반환한다.")
     void productOrderTest() {
-        // ────────────── Given ──────────────
+        // Given
         Long userId = 1L;
         Long couponId = 10L;
 
-        List<OrderItemRequest> items = List.of(
-                new OrderItemRequest(1001L, "셔츠", 15000L, 2),  // 30,000
-                new OrderItemRequest(1002L, "바지", 20000L, 1)   // 20,000
+        List<OrderItemCommand> items = List.of(
+                new OrderItemCommand(1001L, "셔츠", 15000L, 2),
+                new OrderItemCommand(1002L, "바지", 20000L, 1)
         );
+        OrderCommand command = new OrderCommand(userId, couponId, items);
 
-        OrderRequest request = new OrderRequest(userId, couponId, items);
-
-        long totalPrice = 50000L;        // 30,000 + 20,000
+        long totalPrice = 50000L;
         int discountPercent = 10;
-        long discountedPrice = 45000L;   // 10% 할인
+        long discountedPrice = 45000L;
 
-        // 쿠폰 할인 퍼센트 반환
         given(couponDiscountService.getDiscountPercent(couponId)).willReturn(discountPercent);
 
-        // 주문 저장 시 리턴할 mock 객체
-        OrderJPA mockSavedOrder = OrderJPA.builder()
+        given(orderRepository.save(any())).willReturn(OrderJPA.builder()
                 .orderId(999L)
                 .userId(userId)
                 .couponId(couponId)
                 .totalPrice(totalPrice)
                 .discountedTotalPrice(discountedPrice)
-                .status(OrderJPA.OrderStatus.CREATED)
-                .build();
-        given(orderRepository.save(any())).willReturn(mockSavedOrder);
+                .status(OrderJPA.OrderStatus.PAID)
+                .build());
 
-        // 아이템 저장 시 그대로 반환
         given(orderItemRepository.insert(any())).willAnswer(invocation -> invocation.getArgument(0));
 
-        // ────────────── When ──────────────
-        OrderJPA result = orderUseCase.createOrder(request);
+        // When
+        OrderResult result = orderUseCase.createOrder(command);
 
-        // ────────────── Then ──────────────
-        // 주문 결과 검증
+        // Then
         assertThat(result).isNotNull();
-        assertThat(result.getOrderId()).isEqualTo(999L);
-        assertThat(result.getTotalPrice()).isEqualTo(totalPrice);
-        assertThat(result.getDiscountedTotalPrice()).isEqualTo(discountedPrice);
-        assertThat(result.getCouponId()).isEqualTo(couponId);
+        assertThat(result.orderId()).isEqualTo(999L);
+        assertThat(result.discountedPrice()).isEqualTo(discountedPrice);
+        assertThat(result.items()).hasSize(2);
+        assertThat(result.status()).isEqualTo("PAID");
 
-        // 서비스 호출 검증
         then(productCheckService).should(times(2)).stockCheck(anyLong(), anyInt());
+        then(productDecreaseService).should(times(2)).decreaseStock(anyLong(), anyInt());
         then(couponCheckService).should().checkCoupon(userId, couponId);
         then(pointUseService).should().usePoint(userId, discountedPrice);
-
-        // 저장 호출 검증
         then(orderRepository).should().save(any(OrderJPA.class));
         then(orderItemRepository).should(times(2)).insert(any(OrderItemJPA.class));
-
-        // 이력 저장 검증
         then(orderHistoryService).should().orderInsert(any(OrderJPA.class), eq("결제완료"));
         then(productHistoryService).should(times(2)).insertHistory(
-                any(Long.class),    // productId
-                any(Long.class),    // orderId
-                any(ProductHistoryJPA.ChangeType.class),
-                anyInt(),           // quantity
-                any(String.class),  // productName
-                any(Long.class)     // pricePerUnit
+                any(), any(), any(), anyInt(), any(), any()
         );
+
     }
 
     @Test
     @DisplayName("상품 재고가 부족하면 예외가 발생한다")
     void shouldFail_whenStockIsInsufficient() {
-        // given
-        Long userId = 1L;
-        Long couponId = 10L;
-        List<OrderItemRequest> items = List.of(
-                new OrderItemRequest(1001L, "셔츠", 15000L, 100)  // 수량이 비정상적으로 많음
+        // Given
+        OrderCommand command = new OrderCommand(
+                1L, 10L,
+                List.of(new OrderItemCommand(1001L, "셔츠", 15000L, 100))
         );
-        OrderRequest request = new OrderRequest(userId, couponId, items);
 
-        // 재고 체크 중 예외 발생
         willThrow(new IllegalStateException("재고 부족")).given(productCheckService)
                 .stockCheck(1001L, 100);
 
-        // when & then
-        assertThatThrownBy(() -> orderUseCase.createOrder(request))
+        // When & Then
+        assertThatThrownBy(() -> orderUseCase.createOrder(command))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("재고 부족");
 
-        // 호출 여부 검증
         then(productCheckService).should().stockCheck(1001L, 100);
         then(couponCheckService).shouldHaveNoInteractions();
         then(pointUseService).shouldHaveNoInteractions();
@@ -141,29 +127,24 @@ public class OrderUseCaseTest {
     @Test
     @DisplayName("쿠폰이 유효하지 않으면 예외가 발생한다")
     void shouldFail_whenCouponIsInvalid() {
-        // given
-        Long userId = 1L;
-        Long couponId = 99L;
-        List<OrderItemRequest> items = List.of(
-                new OrderItemRequest(1001L, "바지", 20000L, 1)
+        // Given
+        OrderCommand command = new OrderCommand(
+                1L, 99L,
+                List.of(new OrderItemCommand(1001L, "바지", 20000L, 1))
         );
-        OrderRequest request = new OrderRequest(userId, couponId, items);
 
-        // 재고는 정상
         willDoNothing().given(productCheckService).stockCheck(anyLong(), anyInt());
 
-        // 쿠폰 유효성 검사 중 예외 발생
         willThrow(new IllegalArgumentException("유효하지 않은 쿠폰")).given(couponCheckService)
-                .checkCoupon(userId, couponId);
+                .checkCoupon(1L, 99L);
 
-        // when & then
-        assertThatThrownBy(() -> orderUseCase.createOrder(request))
+        // When & Then
+        assertThatThrownBy(() -> orderUseCase.createOrder(command))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("유효하지 않은 쿠폰");
 
-        // 호출 여부 검증
         then(productCheckService).should().stockCheck(1001L, 1);
-        then(couponCheckService).should().checkCoupon(userId, couponId);
+        then(couponCheckService).should().checkCoupon(1L, 99L);
         then(pointUseService).shouldHaveNoInteractions();
     }
 

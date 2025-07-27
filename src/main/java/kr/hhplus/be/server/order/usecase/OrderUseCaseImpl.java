@@ -2,16 +2,20 @@ package kr.hhplus.be.server.order.usecase;
 
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.order.controller.dto.OrderItemRequest;
-import kr.hhplus.be.server.order.controller.dto.OrderRequest;
 import kr.hhplus.be.server.order.domain.model.OrderItemJPA;
 import kr.hhplus.be.server.order.domain.model.OrderJPA;
 import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
+import kr.hhplus.be.server.order.pollicy.OrderPriceCalculator;
+import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
+import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
+import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
 import kr.hhplus.be.server.product.domain.service.ProductHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,16 +34,17 @@ public class OrderUseCaseImpl implements OrderUseCase {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderHistoryService orderHistoryService;
+    private final ProductDecreaseService productDecreaseService;
     private final ProductHistoryService productHistoryService;
 
     @Override
-    public OrderJPA createOrder(OrderRequest request) {
-        Long userId = request.userId();
-        Long couponId = request.couponId();
-        List<OrderItemRequest> items = request.items();
+    public OrderResult createOrder(OrderCommand command) {
+        Long userId = command.userId();
+        Long couponId = command.couponId();
+        List<OrderItemCommand> items = command.items();
 
-        // 1. 재고 확인
-        for (OrderItemRequest item : items) {
+        // 1. 재고 확인 + 차감
+        for (OrderItemCommand item : items) {
             productCheckService.stockCheck(item.productId(), item.quantity());
         }
 
@@ -48,8 +53,8 @@ public class OrderUseCaseImpl implements OrderUseCase {
             couponCheckService.checkCoupon(userId, couponId);
         }
 
-        // 3. 총 금액 계산 + 쿠폰 할인 적용(할인율)
-        long totalPrice = calculateTotalPrice(items);
+        // 3. 총 금액 계산 + 쿠폰 할인 적용
+        long totalPrice = OrderPriceCalculator.calculateTotalPrice(items);
         int discountPercent = (couponId != null)
                 ? couponDiscountService.getDiscountPercent(couponId)
                 : 0;
@@ -69,7 +74,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
         OrderJPA savedOrder = orderRepository.save(order);
 
         // 6. 주문 아이템 저장
-        List<OrderItemJPA> orderItems = items.stream()
+        List<OrderItemJPA> savedItems = items.stream()
                 .map(item -> OrderItemJPA.builder()
                         .orderId(savedOrder.getOrderId())
                         .productId(item.productId())
@@ -84,8 +89,16 @@ public class OrderUseCaseImpl implements OrderUseCase {
         // 7. 주문 이력 저장
         orderHistoryService.orderInsert(savedOrder, "결제완료");
 
-        // 8. 상품 이력 저장
-        orderItems.forEach(item ->
+        // 8. 재고차감
+        savedItems.forEach(item ->
+                productDecreaseService.decreaseStock(
+                        item.getProductId(),
+                        item.getQuantity()
+                )
+        );
+
+        // 9. 상품 이력 저장
+        savedItems.forEach(item ->
                 productHistoryService.insertHistory(
                         item.getProductId(),
                         item.getOrderId(),
@@ -96,15 +109,23 @@ public class OrderUseCaseImpl implements OrderUseCase {
                 )
         );
 
-        return savedOrder;
+        // 9. UseCase 응답 객체로 변환
+        return new OrderResult(
+                savedOrder.getOrderId(),
+                savedOrder.getUserId(),
+                savedOrder.getTotalPrice(),
+                savedOrder.getDiscountedTotalPrice(),
+                savedItems.stream()
+                        .map(i -> new OrderItemResult(
+                                i.getProductId(),
+                                i.getProductName(),
+                                i.getQuantity(),
+                                i.getTotalPrice()
+                        ))
+                        .toList(),
+                savedOrder.getStatus().name()
+        );
     }
 
-    private long calculateTotalPrice(List<OrderItemRequest> items) {
-        return items.stream()
-                .mapToLong(item -> item.pricePerUnit() * item.quantity())
-                .sum();
-    }
 }
-
-
 

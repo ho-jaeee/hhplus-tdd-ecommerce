@@ -14,5 +14,4 @@ public class PointChargePolicy {
             throw new IllegalArgumentException("충전 금액은 1,000원 단위로만 가능합니다.");
         }
     }
-
 }
