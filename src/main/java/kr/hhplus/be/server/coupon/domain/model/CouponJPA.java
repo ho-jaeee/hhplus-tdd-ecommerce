@@ -32,6 +32,34 @@ public class CouponJPA {
 
     private LocalDateTime updatedAt; //쿠폰 수정일시
 
+    public Coupon toDomain() {
+        return new Coupon(
+                couponId,
+                name,
+                discountAmount,
+                totalQuantity,
+                issuedQuantity,
+                startAt,
+                endAt,
+                createdAt,
+                updatedAt
+        );
+    }
+
+    public static CouponJPA from(Coupon domain) {
+        return CouponJPA.builder()
+                .couponId(domain.getId())
+                .name(domain.getName())
+                .discountAmount(domain.getDiscountAmount())
+                .totalQuantity(domain.getTotalQuantity())
+                .issuedQuantity(domain.getIssuedQuantity())
+                .startAt(domain.getStartAt())
+                .endAt(domain.getEndAt())
+                .createdAt(domain.getCreatedAt())
+                .updatedAt(domain.getUpdatedAt())
+                .build();
+    }
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
@@ -43,12 +71,4 @@ public class CouponJPA {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public boolean isValidPeriod() { // 만료일자 계산
-        LocalDateTime now = LocalDateTime.now();
-        return now.isAfter(startAt) && now.isBefore(endAt);
-    }
-
-    public void increaseIssuedQuantity() { //발급 시 수량증가
-        this.issuedQuantity++;
-    }
 }

@@ -11,7 +11,7 @@ public class CouponTable {
     private final Map<Long, CouponJPA> table = new HashMap<>();
 
 
-    public CouponJPA insertOrUpdate(CouponJPA coupon) {
+    public CouponJPA save(CouponJPA coupon) {
         table.put(coupon.getCouponId(), coupon);
         return coupon;
     }

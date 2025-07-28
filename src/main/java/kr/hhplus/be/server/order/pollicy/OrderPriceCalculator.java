@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.pollicy;
 
-import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
+import kr.hhplus.be.server.order.domain.model.OrderItemCommand;
 
 import java.util.List;
 

@@ -6,8 +6,8 @@ import kr.hhplus.be.server.order.controller.dto.OrderItemRequest;
 import kr.hhplus.be.server.order.controller.dto.OrderRequest;
 
 import kr.hhplus.be.server.order.usecase.OrderUseCase;
-import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
-import kr.hhplus.be.server.order.usecase.dto.OrderResult;
+import kr.hhplus.be.server.order.domain.model.OrderItemResult;
+import kr.hhplus.be.server.order.domain.model.OrderResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

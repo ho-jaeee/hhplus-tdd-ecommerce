@@ -1,43 +1,63 @@
 package kr.hhplus.be.server.couponTest;
 
 
-import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
+import kr.hhplus.be.server.coupon.domain.model.Coupon;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class CouponDiscountServiceTest {
 
-    @Mock
-    private CouponRepository couponRepository;
 
-    @InjectMocks
+    private CouponRepository couponRepository;
     private CouponDiscountService couponDiscountService;
 
+    @BeforeEach
+    void setUp() {
+        couponRepository = mock(CouponRepository.class);
+        couponDiscountService = new CouponDiscountService(couponRepository);
+    }
+
+
+    @Test
+    @DisplayName("쿠폰할인이 정상적으로 반영된다.")
     void returnDiscountPercentage() {
+        // given
         long couponId = 100L;
         int expectedDiscount = 15;
 
-        CouponJPA coupon = CouponJPA.builder()
-                .couponId(couponId)
-                .discountAmount(expectedDiscount)
-                .build();
+        Coupon coupon = new Coupon(
+                couponId,
+                "테스트 쿠폰",
+                expectedDiscount,
+                100,
+                10,
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now()
+        );
 
         given(couponRepository.findByCouponId(couponId))
-                .willReturn(java.util.Optional.of(coupon));
+                .willReturn(Optional.of(coupon));
 
         // when
-        int result = couponDiscountService.getDiscountPercent(couponId);
+        int discount = couponDiscountService.getDiscountPercent(couponId);
 
         // then
-        assertThat(result).isEqualTo(expectedDiscount);
+        assertThat(discount).isEqualTo(expectedDiscount);
 
     }
 

@@ -10,7 +10,7 @@ public class CouponUserTable {
 
     private final Map<Long, CouponUserJPA> table = new HashMap<>();
 
-    public CouponUserJPA insert(CouponUserJPA userCoupon) {
+    public CouponUserJPA save(CouponUserJPA userCoupon) {
         table.put(userCoupon.getId(), userCoupon);
         return userCoupon;
     }
@@ -20,6 +20,7 @@ public class CouponUserTable {
     }
 
     public List<CouponUserJPA> findAll() {
+
         return new ArrayList<>(table.values());
     }
 

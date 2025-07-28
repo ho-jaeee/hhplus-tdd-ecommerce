@@ -1,9 +1,8 @@
 package kr.hhplus.be.server.order.controller.dto;
 
-import kr.hhplus.be.server.order.usecase.dto.OrderResult;
+import kr.hhplus.be.server.order.domain.model.OrderResult;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record OrderResponse (
         Long orderId,

@@ -1,17 +1,19 @@
 package kr.hhplus.be.server.couponTest;
 
-
-import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
-import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
-import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.coupon.service.CouponIssuedService;
+import kr.hhplus.be.server.coupon.domain.service.CouponIssuedService;
+import kr.hhplus.be.server.coupon.domain.model.Coupon;
+import kr.hhplus.be.server.coupon.domain.model.CouponUser;
+import kr.hhplus.be.server.coupon.policy.CouponValidator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -20,7 +22,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+
 
 @ExtendWith(MockitoExtension.class)
 public class CouponIssuedServiceTest {
@@ -31,43 +33,55 @@ public class CouponIssuedServiceTest {
     @Mock
     private CouponUserRepository couponUserRepository;
 
+    @Mock
+    private CouponValidator couponValidator;
+
+    @InjectMocks
+    private CouponIssuedService couponIssuedService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
 
     @Test
-    @DisplayName("정상적인 쿠폰 발급은 Test를 통과한다")
+    @DisplayName("정상적인 쿠폰 발급은 Test를 통과한다.")
     void couponIssued(){
-        //given
-        Long couponId = 1L;
-        Long userId = 2L;
-        CouponIssuedService service = new CouponIssuedService(couponRepository, couponUserRepository);
 
+        // given
+        long couponId = 100L;
+        long userId = 2L;
 
-        CouponJPA coupon = new CouponJPA(
+        Coupon coupon = new Coupon(
                 couponId,
                 "10% 할인쿠폰",
                 10,
                 100,
-                50,
+                10,
                 LocalDateTime.now().minusDays(10),
                 LocalDateTime.now().plusDays(10),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
-
         given(couponRepository.findByCouponId(couponId)).willReturn(Optional.of(coupon));
-        given(couponUserRepository.insert(any())).willAnswer(invocation -> invocation.getArgument(0));
+        given(couponUserRepository.findByUserIdAndCouponId(userId, couponId)).willReturn(Optional.empty());
+        given(couponUserRepository.save(any())).willAnswer(invocation -> invocation.getArgument(0));
+
 
         // when
-        CouponUserJPA issuedCoupon = service.issueCouponToUser(couponId, userId);
+        CouponUser issued = couponIssuedService.issueCouponToUser(couponId, userId);
+
 
         // then
-        assertThat(issuedCoupon).isNotNull();
-        assertThat(issuedCoupon.getCouponId()).isEqualTo(couponId);
-        assertThat(issuedCoupon.getUserId()).isEqualTo(userId);
-        assertThat(issuedCoupon.getIsUsed()).isFalse();
+        assertThat(issued).isNotNull();
+        assertThat(issued.getCouponId()).isEqualTo(couponId);
+        assertThat(issued.getUserId()).isEqualTo(userId);
+        assertThat(issued.isUsed()).isFalse();
 
-        verify(couponRepository).findByCouponId(couponId);
-        verify(couponUserRepository).insert(any(CouponUserJPA.class));
 
+        Mockito.verify(couponValidator).validateIssue(coupon, Optional.empty());
+        Mockito.verify(couponUserRepository).save(any(CouponUser.class));
 
     }
 

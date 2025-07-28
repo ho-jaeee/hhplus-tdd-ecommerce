@@ -1,11 +1,12 @@
 package kr.hhplus.be.server.couponTest;
 
 
-import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
-import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
+
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
+import kr.hhplus.be.server.coupon.domain.model.Coupon;
+import kr.hhplus.be.server.coupon.domain.model.CouponUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,15 +48,15 @@ public class CouponCheckServiceTest {
     void checkCoupon() {
 
         // given
-         CouponJPA coupon = new CouponJPA( // ERD 구조에 맞춰 생성
+         Coupon coupon = new Coupon( // ERD 구조에 맞춰 생성
                  couponId, "10% 할인", 10, 100, 50,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now(), LocalDateTime.now()
         );
 
-        CouponUserJPA couponUser = new CouponUserJPA(
-                999L, userId, couponId, false, null, LocalDateTime.now()
+        CouponUser couponUser = new CouponUser(
+                 userId, couponId, false, null, LocalDateTime.now()
         );
 
         given(couponRepository.findByCouponId(couponId)).willReturn(Optional.of(coupon));
@@ -83,7 +84,7 @@ public class CouponCheckServiceTest {
     @DisplayName("쿠폰 사용기간이 아닐 경우 예외가 발생한다")
     void checkCoupon_invalidPeriod() {
         // given
-        CouponJPA expiredCoupon = new CouponJPA(
+        Coupon expiredCoupon = new Coupon(
                 couponId, "만료 쿠폰", 10, 100, 10,
                 LocalDateTime.now().minusDays(10),
                 LocalDateTime.now().minusDays(1),
@@ -101,7 +102,7 @@ public class CouponCheckServiceTest {
     @DisplayName("사용자가 쿠폰을 보유하고 있지 않으면 예외가 발생한다")
     void checkCoupon_userNotOwnsCoupon() {
         // given
-        CouponJPA validCoupon = new CouponJPA(
+        Coupon validCoupon = new Coupon(
                 couponId, "정상 쿠폰", 10, 100, 10,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().plusDays(1),
@@ -120,14 +121,14 @@ public class CouponCheckServiceTest {
     @DisplayName("이미 사용한 쿠폰이면 예외가 발생한다")
     void checkCoupon_alreadyUsed() {
         // given
-        CouponJPA validCoupon = new CouponJPA(
+        Coupon validCoupon = new Coupon(
                 couponId, "사용 쿠폰", 10, 100, 10,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now(), LocalDateTime.now()
         );
-        CouponUserJPA usedCoupon = new CouponUserJPA(
-                999L, userId, couponId, true,
+        CouponUser usedCoupon = new CouponUser(
+                userId, couponId, true,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().minusDays(2)
         );

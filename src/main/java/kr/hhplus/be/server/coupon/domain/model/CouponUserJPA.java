@@ -15,20 +15,30 @@ public class CouponUserJPA {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long userId;
-
     private Long couponId;
-
     private Boolean isUsed;
-
     private LocalDateTime usedAt;
-
     private LocalDateTime issuedAt;
 
-    public void useCoupon() {
-        this.isUsed = true;
-        this.usedAt = LocalDateTime.now();
+    public CouponUser toDomain() {
+        return new CouponUser(
+                userId,
+                couponId,
+                isUsed,
+                usedAt,
+                issuedAt
+        );
+    }
+
+    public static CouponUserJPA from(CouponUser domain) {
+        return CouponUserJPA.builder()
+                .userId(domain.getUserId())
+                .couponId(domain.getCouponId())
+                .isUsed(domain.isUsed())
+                .usedAt(domain.getIssuedAt())
+                .issuedAt(domain.getUsedAt())
+                .build();
     }
 
     @PrePersist

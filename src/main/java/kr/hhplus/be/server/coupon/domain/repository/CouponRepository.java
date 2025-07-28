@@ -1,15 +1,15 @@
 package kr.hhplus.be.server.coupon.domain.repository;
 
-import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
+import kr.hhplus.be.server.coupon.domain.model.Coupon;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CouponRepository {
 
-    CouponJPA insertOrUpdate(CouponJPA coupon);
+    Coupon save(Coupon coupon);
 
-    Optional<CouponJPA> findByCouponId(Long couponId);
+    Optional<Coupon> findByCouponId(Long couponId);
 
-    List<CouponJPA> findAll();
+    List<Coupon> findAll();
 }

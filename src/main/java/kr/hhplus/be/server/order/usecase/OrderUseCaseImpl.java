@@ -8,10 +8,10 @@ import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
 import kr.hhplus.be.server.order.pollicy.OrderPriceCalculator;
-import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
-import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
-import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
-import kr.hhplus.be.server.order.usecase.dto.OrderResult;
+import kr.hhplus.be.server.order.domain.model.OrderCommand;
+import kr.hhplus.be.server.order.domain.model.OrderItemCommand;
+import kr.hhplus.be.server.order.domain.model.OrderItemResult;
+import kr.hhplus.be.server.order.domain.model.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
@@ -89,7 +89,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
         // 7. 주문 이력 저장
         orderHistoryService.orderInsert(savedOrder, "결제완료");
 
-        // 8. 재고차감
+        // 8. 재고차감 -> 일부러 나중에 함 결제 완료 후
         savedItems.forEach(item ->
                 productDecreaseService.decreaseStock(
                         item.getProductId(),
