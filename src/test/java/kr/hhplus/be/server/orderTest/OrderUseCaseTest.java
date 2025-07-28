@@ -3,8 +3,6 @@ package kr.hhplus.be.server.orderTest;
 
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.order.controller.dto.OrderItemRequest;
-import kr.hhplus.be.server.order.controller.dto.OrderRequest;
 import kr.hhplus.be.server.order.domain.model.OrderItemJPA;
 import kr.hhplus.be.server.order.domain.model.OrderJPA;
 import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
