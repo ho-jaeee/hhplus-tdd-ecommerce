@@ -3,17 +3,15 @@ package kr.hhplus.be.server.couponTest;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.coupon.domain.service.CouponIssuedService;
-import kr.hhplus.be.server.coupon.domain.model.Coupon;
-import kr.hhplus.be.server.coupon.domain.model.CouponUser;
+import kr.hhplus.be.server.coupon.domain.service.Coupon;
+import kr.hhplus.be.server.coupon.domain.service.CouponUser;
 import kr.hhplus.be.server.coupon.policy.CouponValidator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -39,10 +37,6 @@ public class CouponIssuedServiceTest {
     @InjectMocks
     private CouponIssuedService couponIssuedService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
 
     @Test

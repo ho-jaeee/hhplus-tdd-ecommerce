@@ -21,11 +21,13 @@ public class OrderHistoryJPA {
     private Long orderId;
 
     @Enumerated(EnumType.STRING) // 상태표현만 하기 때문에 SRP 위배라고 생각안함
-    private OrderJPA.OrderStatus status;
+    private OrderStatus status;
 
     private String reason;
 
     private LocalDateTime changedAt;
+
+
 
     @PrePersist
     public void prePersist() {

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.coupon.policy;
 
-import kr.hhplus.be.server.coupon.domain.model.Coupon;
-import kr.hhplus.be.server.coupon.domain.model.CouponUser;
+import kr.hhplus.be.server.coupon.domain.service.Coupon;
+import kr.hhplus.be.server.coupon.domain.service.CouponUser;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

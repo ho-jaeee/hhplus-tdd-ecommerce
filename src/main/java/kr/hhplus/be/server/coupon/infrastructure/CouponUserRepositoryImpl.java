@@ -2,7 +2,7 @@ package kr.hhplus.be.server.coupon.infrastructure;
 
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
-import kr.hhplus.be.server.coupon.domain.model.CouponUser;
+import kr.hhplus.be.server.coupon.domain.service.CouponUser;
 import kr.hhplus.be.server.database.coupon.CouponUserTable;
 import org.springframework.stereotype.Repository;
 

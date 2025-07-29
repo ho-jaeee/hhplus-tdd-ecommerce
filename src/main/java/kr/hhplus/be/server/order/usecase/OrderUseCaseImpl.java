@@ -2,16 +2,13 @@ package kr.hhplus.be.server.order.usecase;
 
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.order.domain.model.OrderItemJPA;
-import kr.hhplus.be.server.order.domain.model.OrderJPA;
+import kr.hhplus.be.server.order.domain.model.*;
 import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
+import kr.hhplus.be.server.order.domain.service.OrderItemSaveService;
+import kr.hhplus.be.server.order.domain.service.OrderSaveService;
 import kr.hhplus.be.server.order.pollicy.OrderPriceCalculator;
-import kr.hhplus.be.server.order.domain.model.OrderCommand;
-import kr.hhplus.be.server.order.domain.model.OrderItemCommand;
-import kr.hhplus.be.server.order.domain.model.OrderItemResult;
-import kr.hhplus.be.server.order.domain.model.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
@@ -20,6 +17,7 @@ import kr.hhplus.be.server.product.domain.service.ProductHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -31,8 +29,8 @@ public class OrderUseCaseImpl implements OrderUseCase {
     private final CouponCheckService couponCheckService;
     private final CouponDiscountService couponDiscountService;
     private final PointUseService pointUseService;
-    private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
+    private final OrderSaveService orderSaveService;
+    private final OrderItemSaveService orderItemSaveService;
     private final OrderHistoryService orderHistoryService;
     private final ProductDecreaseService productDecreaseService;
     private final ProductHistoryService productHistoryService;
@@ -63,28 +61,18 @@ public class OrderUseCaseImpl implements OrderUseCase {
         // 4. 포인트 차감
         pointUseService.usePoint(userId, discountedPrice);
 
-        // 5. 주문 저장
-        OrderJPA order = OrderJPA.builder()
-                .userId(userId)
-                .couponId(couponId)
-                .totalPrice(totalPrice)
-                .discountedTotalPrice(discountedPrice)
-                .status(OrderJPA.OrderStatus.PAID)
-                .build();
-        OrderJPA savedOrder = orderRepository.save(order);
+        // 5. 주문 생성 및 저장
+        Order order = Order.create(userId, couponId, totalPrice, discountedPrice, OrderStatus.PAID,
+                LocalDateTime.now(), LocalDateTime.now());
+        Order savedOrder = orderSaveService.save(order);
+
 
         // 6. 주문 아이템 저장
-        List<OrderItemJPA> savedItems = items.stream()
-                .map(item -> OrderItemJPA.builder()
-                        .orderId(savedOrder.getOrderId())
-                        .productId(item.productId())
-                        .productName(item.productName())
-                        .pricePerUnit(item.pricePerUnit())
-                        .quantity(item.quantity())
-                        .totalPrice(item.pricePerUnit() * item.quantity())
-                        .build())
-                .map(orderItemRepository::insert)
+        List<OrderItem> orderItems = items.stream()
+                .map(i -> OrderItem.create(i.productId(), i.productName(), i.quantity(), i.pricePerUnit()))
+                .map(item -> item.withOrderId(savedOrder.getOrderId()))
                 .toList();
+        orderItemSaveService.itemSave(orderItems);
 
         // 7. 주문 이력 저장
         orderHistoryService.orderInsert(savedOrder, "결제완료");

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.couponTest;
 
-import kr.hhplus.be.server.coupon.domain.model.Coupon;
-import kr.hhplus.be.server.coupon.domain.model.CouponUser;
+import kr.hhplus.be.server.coupon.domain.service.Coupon;
+import kr.hhplus.be.server.coupon.domain.service.CouponUser;
 import kr.hhplus.be.server.coupon.policy.CouponValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

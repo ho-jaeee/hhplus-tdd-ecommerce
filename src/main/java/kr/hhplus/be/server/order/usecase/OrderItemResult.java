@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.order.domain.model;
+package kr.hhplus.be.server.order.usecase;
 
 
 // usecase 출력 전용 DTO

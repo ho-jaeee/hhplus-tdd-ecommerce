@@ -3,15 +3,15 @@ package kr.hhplus.be.server.orderTest;
 
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.order.domain.model.OrderItemJPA;
-import kr.hhplus.be.server.order.domain.model.OrderJPA;
-import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
-import kr.hhplus.be.server.order.domain.repository.OrderRepository;
+import kr.hhplus.be.server.order.domain.model.Order;
+import kr.hhplus.be.server.order.domain.model.OrderStatus;
+import kr.hhplus.be.server.order.domain.service.OrderSaveService;
+import kr.hhplus.be.server.order.domain.service.OrderItemSaveService;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
-import kr.hhplus.be.server.order.usecase.OrderUseCaseImpl;
-import kr.hhplus.be.server.order.domain.model.OrderCommand;
-import kr.hhplus.be.server.order.domain.model.OrderItemCommand;
-import kr.hhplus.be.server.order.domain.model.OrderResult;
+import kr.hhplus.be.server.order.usecase.OrderUseCase;
+import kr.hhplus.be.server.order.usecase.OrderCommand;
+import kr.hhplus.be.server.order.usecase.OrderItemCommand;
+import kr.hhplus.be.server.order.usecase.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
 import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
@@ -23,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,65 +39,73 @@ public class OrderUseCaseTest {
     @Mock CouponCheckService couponCheckService;
     @Mock CouponDiscountService couponDiscountService;
     @Mock PointUseService pointUseService;
-    @Mock OrderRepository orderRepository;
-    @Mock OrderItemRepository orderItemRepository;
+    @Mock OrderSaveService orderSaveService;
+    @Mock OrderItemSaveService orderItemSaveService;
+
     @Mock OrderHistoryService orderHistoryService;
     @Mock ProductDecreaseService productDecreaseService;
     @Mock ProductHistoryService productHistoryService;
 
     @InjectMocks
-    OrderUseCaseImpl orderUseCase;
+    OrderUseCase orderUseCase;
 
     @Test
     @DisplayName("정상 주문이 완료되면 PAID 상태를 반환한다.")
     void productOrderTest() {
-        // Given
+        // given
         Long userId = 1L;
         Long couponId = 10L;
 
-        List<OrderItemCommand> items = List.of(
-                new OrderItemCommand(1001L, "셔츠", 15000L, 2),
-                new OrderItemCommand(1002L, "바지", 20000L, 1)
+        List<OrderItemCommand> itemCommands = List.of(
+                new OrderItemCommand(1001L, "키보드", 50000L, 1),
+                new OrderItemCommand(1002L, "마우스", 30000L, 2)
         );
-        OrderCommand command = new OrderCommand(userId, couponId, items);
+        OrderCommand command = new OrderCommand(userId, couponId, itemCommands);
 
-        long totalPrice = 50000L;
+        long totalPrice = 50000L + 30000L * 2; // 110,000원
         int discountPercent = 10;
-        long discountedPrice = 45000L;
+        long discountedPrice = 99000L;
 
+        // stub
         given(couponDiscountService.getDiscountPercent(couponId)).willReturn(discountPercent);
 
-        given(orderRepository.save(any())).willReturn(OrderJPA.builder()
+        Order order = Order.builder()
                 .orderId(999L)
                 .userId(userId)
                 .couponId(couponId)
                 .totalPrice(totalPrice)
                 .discountedTotalPrice(discountedPrice)
-                .status(OrderJPA.OrderStatus.PAID)
-                .build());
+                .status(OrderStatus.PAID)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
-        given(orderItemRepository.insert(any())).willAnswer(invocation -> invocation.getArgument(0));
 
-        // When
+        given(orderSaveService.save(any(Order.class))).willReturn(order);
+
+        given(orderItemSaveService.itemSave(order.getOrderId(), anyList())).willAnswer(invocation -> invocation.getArgument(0));
+
+        // when
         OrderResult result = orderUseCase.createOrder(command);
 
-        // Then
+        // then
         assertThat(result).isNotNull();
         assertThat(result.orderId()).isEqualTo(999L);
         assertThat(result.discountedPrice()).isEqualTo(discountedPrice);
-        assertThat(result.items()).hasSize(2);
         assertThat(result.status()).isEqualTo("PAID");
+        assertThat(result.items()).hasSize(2);
+
 
         then(productCheckService).should(times(2)).stockCheck(anyLong(), anyInt());
         then(productDecreaseService).should(times(2)).decreaseStock(anyLong(), anyInt());
         then(couponCheckService).should().checkCoupon(userId, couponId);
         then(pointUseService).should().usePoint(userId, discountedPrice);
-        then(orderRepository).should().save(any(OrderJPA.class));
-        then(orderItemRepository).should(times(2)).insert(any(OrderItemJPA.class));
-        then(orderHistoryService).should().orderInsert(any(OrderJPA.class), eq("결제완료"));
-        then(productHistoryService).should(times(2)).insertHistory(
-                any(), any(), any(), anyInt(), any(), any()
-        );
+        then(orderSaveService).should().save(any(Order.class));
+        then(orderItemSaveService).should().itemSave(order.getOrderId(),anyList());
+        then(orderHistoryService).should().orderInsert(any(Order.class), eq("결제완료"));
+        then(productHistoryService).should(times(2))
+                .insertHistory(any(), any(), any(), anyInt(), any(), any());
+
 
     }
 

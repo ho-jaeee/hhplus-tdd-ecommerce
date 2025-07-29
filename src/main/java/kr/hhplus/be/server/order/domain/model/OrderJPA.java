@@ -33,9 +33,7 @@ public class OrderJPA {
 
     private LocalDateTime updatedAt; //주문변경일
 
-    public enum OrderStatus {
-        CREATED, PAID, FAILED, CANCELED
-    }
+
 
 
     @PrePersist

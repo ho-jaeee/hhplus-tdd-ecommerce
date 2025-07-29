@@ -3,7 +3,7 @@ package kr.hhplus.be.server.coupon.infrastructure;
 
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
-import kr.hhplus.be.server.coupon.domain.model.Coupon;
+import kr.hhplus.be.server.coupon.domain.service.Coupon;
 
 import kr.hhplus.be.server.database.coupon.CouponTable;
 import lombok.RequiredArgsConstructor;

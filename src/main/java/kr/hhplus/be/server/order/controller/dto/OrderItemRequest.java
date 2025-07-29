@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.controller.dto;
 
-import kr.hhplus.be.server.order.domain.model.OrderItemCommand;
+import kr.hhplus.be.server.order.usecase.OrderItemCommand;
 import lombok.Builder;
 
 @Builder

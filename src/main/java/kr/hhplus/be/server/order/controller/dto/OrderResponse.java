@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.controller.dto;
 
-import kr.hhplus.be.server.order.domain.model.OrderResult;
+import kr.hhplus.be.server.order.usecase.OrderResult;
 
 import java.util.List;
 

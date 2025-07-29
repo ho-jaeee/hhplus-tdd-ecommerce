@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.coupon.domain.model;
+package kr.hhplus.be.server.coupon.domain.service;
 
 
 import lombok.Getter;
