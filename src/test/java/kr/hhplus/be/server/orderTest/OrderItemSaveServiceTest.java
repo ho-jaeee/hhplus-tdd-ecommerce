@@ -36,8 +36,8 @@ public class OrderItemSaveServiceTest {
     void saveOrderItem() {
         // Given
         Long orderId = 1L;
-        OrderItem item1 = OrderItem.create(101L, "상품1", 2, 5000);
-        OrderItem item2 = OrderItem.create(102L, "상품2", 1, 10000);
+        OrderItem item1 = OrderItem.create(orderId,101L, "상품1", 2, 5000);
+        OrderItem item2 = OrderItem.create(orderId, 102L, "상품2", 1, 10000);
         List<OrderItem> items = List.of(item1, item2);
 
         // Mock repository insert behavior

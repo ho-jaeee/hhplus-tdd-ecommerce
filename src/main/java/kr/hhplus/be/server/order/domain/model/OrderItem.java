@@ -8,15 +8,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderItem{
 
+    private final Long orderId;
     private final Long productId;
     private final String productName;
     private final long pricePerUnit;
     private final int quantity;
     private final long totalPrice;
 
-    public static OrderItem create(Long productId, String productName,long pricePerUnit, int quantity)
+    public static OrderItem create(Long orderId, Long productId, String productName,long pricePerUnit, int quantity)
     {   long total = quantity * pricePerUnit;
-        return new OrderItem(productId, productName, pricePerUnit, quantity, total);
+        return new OrderItem(orderId, productId, productName, pricePerUnit, quantity, total);
     }
 
     public OrderItemJPA toEntity(Long orderId) {

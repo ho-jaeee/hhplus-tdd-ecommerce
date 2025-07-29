@@ -8,10 +8,7 @@ import kr.hhplus.be.server.order.domain.model.OrderStatus;
 import kr.hhplus.be.server.order.domain.service.OrderSaveService;
 import kr.hhplus.be.server.order.domain.service.OrderItemSaveService;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
-import kr.hhplus.be.server.order.usecase.OrderUseCase;
-import kr.hhplus.be.server.order.usecase.OrderCommand;
-import kr.hhplus.be.server.order.usecase.OrderItemCommand;
-import kr.hhplus.be.server.order.usecase.OrderResult;
+import kr.hhplus.be.server.order.usecase.*;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
 import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
@@ -47,7 +44,7 @@ public class OrderUseCaseTest {
     @Mock ProductHistoryService productHistoryService;
 
     @InjectMocks
-    OrderUseCase orderUseCase;
+    OrderUseCaseImpl orderUseCaseImpl;
 
     @Test
     @DisplayName("정상 주문이 완료되면 PAID 상태를 반환한다.")
@@ -83,10 +80,17 @@ public class OrderUseCaseTest {
 
         given(orderSaveService.save(any(Order.class))).willReturn(order);
 
-        given(orderItemSaveService.itemSave(order.getOrderId(), anyList())).willAnswer(invocation -> invocation.getArgument(0));
 
+        given(orderItemSaveService.itemSave(
+                eq(order.getOrderId()),
+                anyList()
+        ))
+                .willAnswer(invocation ->
+
+                        invocation.getArgument(1)
+                );
         // when
-        OrderResult result = orderUseCase.createOrder(command);
+        OrderResult result = orderUseCaseImpl.createOrder(command);
 
         // then
         assertThat(result).isNotNull();
@@ -101,7 +105,7 @@ public class OrderUseCaseTest {
         then(couponCheckService).should().checkCoupon(userId, couponId);
         then(pointUseService).should().usePoint(userId, discountedPrice);
         then(orderSaveService).should().save(any(Order.class));
-        then(orderItemSaveService).should().itemSave(order.getOrderId(),anyList());
+        then(orderItemSaveService).should().itemSave(eq(order.getOrderId()), anyList());
         then(orderHistoryService).should().orderInsert(any(Order.class), eq("결제완료"));
         then(productHistoryService).should(times(2))
                 .insertHistory(any(), any(), any(), anyInt(), any(), any());
@@ -122,7 +126,7 @@ public class OrderUseCaseTest {
                 .stockCheck(1001L, 100);
 
         // When & Then
-        assertThatThrownBy(() -> orderUseCase.createOrder(command))
+        assertThatThrownBy(() -> orderUseCaseImpl.createOrder(command))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("재고 부족");
 
@@ -146,7 +150,7 @@ public class OrderUseCaseTest {
                 .checkCoupon(1L, 99L);
 
         // When & Then
-        assertThatThrownBy(() -> orderUseCase.createOrder(command))
+        assertThatThrownBy(() -> orderUseCaseImpl.createOrder(command))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("유효하지 않은 쿠폰");
 

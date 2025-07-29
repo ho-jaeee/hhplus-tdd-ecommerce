@@ -69,16 +69,21 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
         // 6. 주문 아이템 저장
         List<OrderItem> orderItems = items.stream()
-                .map(i -> OrderItem.create(i.productId(), i.productName(), i.quantity(), i.pricePerUnit()))
-                .map(item -> item.withOrderId(savedOrder.getOrderId()))
+                .map(i -> OrderItem.create(
+                        savedOrder.getOrderId(),
+                        i.productId(),
+                        i.productName(),
+                        i.pricePerUnit(),
+                        i.quantity()
+                ))
                 .toList();
-        orderItemSaveService.itemSave(orderItems);
+        orderItemSaveService.itemSave(savedOrder.getOrderId(),orderItems);
 
         // 7. 주문 이력 저장
         orderHistoryService.orderInsert(savedOrder, "결제완료");
 
         // 8. 재고차감 -> 일부러 나중에 함 결제 완료 후
-        savedItems.forEach(item ->
+        orderItems.forEach(item ->
                 productDecreaseService.decreaseStock(
                         item.getProductId(),
                         item.getQuantity()
@@ -86,7 +91,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
         );
 
         // 9. 상품 이력 저장
-        savedItems.forEach(item ->
+        orderItems.forEach(item ->
                 productHistoryService.insertHistory(
                         item.getProductId(),
                         item.getOrderId(),
@@ -103,7 +108,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
                 savedOrder.getUserId(),
                 savedOrder.getTotalPrice(),
                 savedOrder.getDiscountedTotalPrice(),
-                savedItems.stream()
+                orderItems.stream()
                         .map(i -> new OrderItemResult(
                                 i.getProductId(),
                                 i.getProductName(),
