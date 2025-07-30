@@ -15,7 +15,7 @@ public class ProductFindService implements ProductFindUseCase {
     @Override
     public ProductJPA findProducts(Long productId) {
 
-        return productRepository.findByProductId(productId)
+        return productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 제품이 존재하지 않습니다: " + productId));
     }
 }

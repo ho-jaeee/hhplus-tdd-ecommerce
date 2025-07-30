@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class ProductJPA {
 
     @Id
-    @Column(name = "product_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
     private String name;

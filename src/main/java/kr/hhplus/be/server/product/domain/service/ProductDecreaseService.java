@@ -15,7 +15,7 @@ public class ProductDecreaseService {
 
     @Transactional
     public void decreaseStock(long productId, int amount) {
-        ProductJPA product = productRepository.findByProductId(productId)
+        ProductJPA product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
         product.decreaseQuantity(amount);

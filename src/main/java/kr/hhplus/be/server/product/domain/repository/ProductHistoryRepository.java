@@ -1,14 +1,10 @@
 package kr.hhplus.be.server.product.domain.repository;
 
 import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ProductHistoryRepository {
+public interface ProductHistoryRepository extends JpaRepository<ProductHistoryJPA, Long> {
 
-    ProductHistoryJPA insert(ProductHistoryJPA history);
-
-    List<ProductHistoryJPA> findByProductId(Long productId);
-
-    List<ProductHistoryJPA> findAll();
 }

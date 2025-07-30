@@ -17,13 +17,11 @@ public class ProductCheckService {
 
     @Transactional(readOnly = true)
     public void stockCheck(Long productId, int requestQuantity) {
-        ProductJPA product = productRepository.findByProductId(productId)
+        ProductJPA product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
         if (!product.stockCheck(requestQuantity)) {
             throw new IllegalStateException("재고 부족");
         }
     }
-
-
 }

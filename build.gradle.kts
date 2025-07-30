@@ -39,8 +39,9 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
 	// DB
-	//runtimeOnly("com.mysql:mysql-connector-j")
-	implementation("mysql:mysql-connector-java:8.0.33")
+	//implementation("mysql:mysql-connector-java:8.0.33")
+	runtimeOnly("com.mysql:mysql-connector-j")
+
 
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -56,7 +57,6 @@ dependencies {
 	testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
 
 }
-
 
 tasks.withType<Test> {
 	useJUnitPlatform()

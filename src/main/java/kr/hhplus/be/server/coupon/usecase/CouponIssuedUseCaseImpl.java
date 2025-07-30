@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.coupon.usecase;
 
-import kr.hhplus.be.server.coupon.domain.service.CouponUser;
+import kr.hhplus.be.server.coupon.domain.service.dto.CouponUser;
 import kr.hhplus.be.server.coupon.domain.service.CouponIssuedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

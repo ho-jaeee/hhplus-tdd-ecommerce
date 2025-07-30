@@ -18,7 +18,7 @@ public class ProductHistoryService {
         ProductHistoryJPA history = ProductHistoryJPA.createWithoutId(
                 productId, orderId, changeType, quantity, productName, pricePerUnit
         );
-        repository.insert(history);
+        repository.save(history);
     }
 
 }

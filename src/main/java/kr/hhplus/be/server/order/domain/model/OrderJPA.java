@@ -2,6 +2,7 @@ package kr.hhplus.be.server.order.domain.model;
 
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.order.domain.service.dto.OrderStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;

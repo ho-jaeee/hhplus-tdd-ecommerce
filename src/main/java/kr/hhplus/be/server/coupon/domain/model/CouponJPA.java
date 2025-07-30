@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.coupon.domain.model;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.coupon.domain.service.Coupon;
+import kr.hhplus.be.server.coupon.domain.service.dto.Coupon;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -49,7 +49,7 @@ public class CouponJPA {
 
     public static CouponJPA from(Coupon domain) {
         return CouponJPA.builder()
-                .couponId(domain.getId())
+                .couponId(domain.getCouponId())
                 .name(domain.getName())
                 .discountAmount(domain.getDiscountAmount())
                 .totalQuantity(domain.getTotalQuantity())

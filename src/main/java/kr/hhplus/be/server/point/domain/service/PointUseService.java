@@ -6,6 +6,7 @@ import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.repository.UserPointHistoryRepository;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PointUseService {
@@ -19,22 +20,25 @@ public class PointUseService {
         this.userPointHistoryRepo = userPointHistoryRepo;
     }
 
+    @Transactional
     public UserPointJPA usePoint(long userId, long point) {
 
         /*현재 포인트 조회
          **현재 포인트보다 포인트가 없으면 예외발생
          **포인트 사용
          */
-        UserPointJPA current = userPointRepo.selectById(userId);
+
+        UserPointJPA current = userPointRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         current.use(point);
 
         // 포인트 업데이트
-        UserPointJPA updated = userPointRepo.insertOrUpdate(userId, current.getPoint());
+        UserPointJPA updated = userPointRepo.save(current);
 
         /*히스토리 저장*/
-        userPointHistoryRepo.insert(
+        userPointHistoryRepo.save(
                 new UserPointHistoryJPA(
-                        0L,
+                        null,
                         userId,
                         point,
                         UserPointHistoryJPA.TransactionType.USE,

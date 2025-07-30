@@ -1,12 +1,9 @@
 package kr.hhplus.be.server.order.domain.service;
 
-import kr.hhplus.be.server.order.domain.model.Order;
-import kr.hhplus.be.server.order.domain.model.OrderHistoryJPA;
+import kr.hhplus.be.server.order.domain.service.dto.Order;
 import kr.hhplus.be.server.order.domain.repository.OrderHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +13,6 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
 
     @Override
     public void orderInsert(Order order, String reason) {
-      orderHistoryRepository.insert(order.toHistory(reason));
+      orderHistoryRepository.save(order.toHistory(reason));
     }
 }

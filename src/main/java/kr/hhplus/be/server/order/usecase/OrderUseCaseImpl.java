@@ -2,12 +2,12 @@ package kr.hhplus.be.server.order.usecase;
 
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.order.domain.model.*;
-import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
-import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
 import kr.hhplus.be.server.order.domain.service.OrderItemSaveService;
 import kr.hhplus.be.server.order.domain.service.OrderSaveService;
+import kr.hhplus.be.server.order.domain.service.dto.Order;
+import kr.hhplus.be.server.order.domain.service.dto.OrderItem;
+import kr.hhplus.be.server.order.domain.service.dto.OrderStatus;
 import kr.hhplus.be.server.order.pollicy.OrderPriceCalculator;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;

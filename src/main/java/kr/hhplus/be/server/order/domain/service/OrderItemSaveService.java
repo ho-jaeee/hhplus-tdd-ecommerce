@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.domain.service;
 
-import kr.hhplus.be.server.order.domain.model.OrderItem;
+import kr.hhplus.be.server.order.domain.service.dto.OrderItem;
 import kr.hhplus.be.server.order.domain.model.OrderItemJPA;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.coupon.domain.model;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.coupon.domain.service.CouponUser;
+import kr.hhplus.be.server.coupon.domain.service.dto.CouponUser;
 import lombok.*;
 import java.time.LocalDateTime;
 

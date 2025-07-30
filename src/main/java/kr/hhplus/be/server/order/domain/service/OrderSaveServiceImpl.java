@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.domain.service;
 
-import kr.hhplus.be.server.order.domain.model.Order;
+import kr.hhplus.be.server.order.domain.service.dto.Order;
 import kr.hhplus.be.server.order.domain.model.OrderJPA;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
