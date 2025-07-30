@@ -39,7 +39,8 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
 	// DB
-	runtimeOnly("com.mysql:mysql-connector-j")
+	//runtimeOnly("com.mysql:mysql-connector-j")
+	implementation("mysql:mysql-connector-java:8.0.33")
 
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
