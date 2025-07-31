@@ -135,3 +135,36 @@ http://localhost:8080/swagger-ui/index.html
 - 이 프로젝트는 도메인 기반 설계, 클린 아키텍처 이행, 테스트 주도 개발을 연습하는 실전 프로젝트입니다.
 
 ---
+
+# 📦 Infrastructure Layer & Integration Test 구조 설명
+
+## 1. 개요
+
+이 문서는 프로젝트에서 Infrastructure Layer 및 기능별 통합 테스트를 설계하고 구현한 과정을 기록한 문서입니다.  
+클린 아키텍처 기반 설계를 유지하면서, 실제 도메인 흐름이 외부 기술 구현과 어떻게 분리되어 있는지를 명확히 하였습니다.
+
+---
+
+## 2. Infrastructure Layer 설계 목적
+
+- 도메인/애플리케이션 계층과 **외부 리소스(DB, 외부 API 등)** 간의 의존 분리를 위해 도입
+- 기술 스택 변경이 발생하더라도 도메인 로직이 영향을 받지 않도록 설계
+- **JPA 기반 Repository, Spring Configuration, 외부 API Adapter 등**을 이 계층에서 관리
+
+
+## 3. 통합 테스트 작성 전략
+
+### 🎯 목적
+
+- 실제 DB(MySQL Testcontainer), 실제 컨트롤러, 실제 서비스 흐름을 따라가는 테스트
+- 기능 단위의 흐름 검증 (`/orders`, `/points/use`, `/coupons/issue`, `/point/charge/{id}` 등)
+
+### 🧪 사용 기술 스택
+
+| 항목 | 기술 |
+|------|------|
+| 테스트 프레임워크 | JUnit5, SpringBootTest |
+| 환경 설정 | `@SpringBootTest`, `@AutoConfigureMockMvc`, Testcontainers |
+| DB 구성 | MySQL Docker 기반 Testcontainer |
+| API 호출 | MockMvc (`@AutoConfigureMockMvc`) |
+| 트랜잭션 | `@Transactional` 적용으로 테스트 후 롤백 처리 |
