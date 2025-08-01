@@ -165,7 +165,7 @@ http://localhost:8080/swagger-ui/index.html
 | 항목 | 기술 |
 |------|------|
 | 테스트 프레임워크 | JUnit5, SpringBootTest |
-| 환경 설정 | `@SpringBootTest`, `@AutoConfigureMockMvc`, Testcontainers |
+| 환경 설정 | `@SpringBootTest`, `@AutoConfigureMockMvc`, `@Testcontainers` |
 | DB 구성 | MySQL Docker 기반 Testcontainer |
 | API 호출 | MockMvc (`@AutoConfigureMockMvc`) |
 | 트랜잭션 | `@Transactional` 적용으로 테스트 후 롤백 처리 |
