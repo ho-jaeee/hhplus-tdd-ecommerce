@@ -54,7 +54,9 @@ kr.hhplus.be.server
 - `JUnit5` + `Mockito` 기반 단위 테스트 수행
 - 모든 도메인 유스케이스에 대해 경계값/예외 케이스 검증
 - Repository는 메모리 기반(`InMemoryRepository`)으로 대체하여 단위 테스트 우선 적용
-- 통합 테스트는 이후 단계에서 Docker 환경으로 확장 예정
+- Docker 환경으로 확장 진행
+- JPA를 활용하여 테이블 생성 완료
+- 통합 테스트 진행완료
 
 ---
 
@@ -119,12 +121,11 @@ http://localhost:8080/swagger-ui/index.html
 
 ## 📈 향후 개선 및 TODO
 
-- 도메인 모델 ↔ JPA 완전 분리 (Entity → Domain Mapper)
-- Port/Adapter 구조 본격 적용
+- 도메인 모델 ↔ JPA 완전 분리 (Entity → Domain Mapper)_진행중
+- Port/Adapter 구조 본격 적용_진행중
 - 동시성 이슈 처리 (쿠폰 발급, 포인트 차감 등)
 - 분산 환경 대응을 위한 Event 기반 구조 설계
 - Redis 기반 캐시 / 선착순 처리 개선
-- Docker-Compose 기반 통합 개발환경 구성
 
 ---
 
