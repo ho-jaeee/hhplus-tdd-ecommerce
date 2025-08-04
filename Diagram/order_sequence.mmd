@@ -1,5 +1,3 @@
-
-
 sequenceDiagram
     participant Client
     participant OrderController
@@ -18,22 +16,16 @@ sequenceDiagram
     OrderService->>ProductService: 재고 확인
     alt 재고 부족
         OrderService-->>OrderController: 실패 응답
-    else
         OrderService->>CouponService: 쿠폰 유효성 확인
         alt 유효함
             CouponService-->>OrderService: 할인 금액 반환
         else
-            OrderService->>OrderService: 원래 금액 확정
         end
 
-        OrderService->>UserService: 포인트 차감 요청
-        alt 포인트 부족
             OrderService-->>OrderController: 실패 응답
-        else
             UserService->>UserService: 포인트 차감
             UserService->>UserHistoryService: 포인트 사용 이력 저장
 
-            OrderService->>OrderService: 주문 확정
             OrderService->>OrderHistoryService: 주문 이력 저장
 
             OrderService->>ProductService: 재고 차감
