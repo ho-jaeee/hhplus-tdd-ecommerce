@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.integrationTest.orderTest;
 
 
+import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
@@ -8,9 +9,9 @@ import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.order.domain.model.OrderJPA;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.domain.service.dto.OrderStatus;
-import kr.hhplus.be.server.order.usecase.OrderCommand;
-import kr.hhplus.be.server.order.usecase.OrderItemCommand;
-import kr.hhplus.be.server.order.usecase.OrderResult;
+import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import kr.hhplus.be.server.order.usecase.OrderUseCase;
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
@@ -21,7 +22,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -29,8 +32,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 @SpringBootTest
-@Transactional
+@Import(TestcontainersConfiguration.class)
 public class OrderUseCaseTestInte {
 
     @Autowired
@@ -101,6 +105,7 @@ public class OrderUseCaseTestInte {
 
         // when
         OrderResult result = orderUseCase.createOrder(command);
+
 
         // then
         assertThat(result).isNotNull();

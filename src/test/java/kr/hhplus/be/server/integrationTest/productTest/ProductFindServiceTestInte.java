@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.integrationTest.productTest;
 
 
+import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.product.domain.model.ProductJPA;
 import kr.hhplus.be.server.product.domain.repository.ProductRepository;
 import kr.hhplus.be.server.product.domain.service.ProductFindService;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@ActiveProfiles("test")  // 테스트용 설정 프로파일 지정 (application-test.yml 등)
-@Transactional  // 테스트 완료 후 DB 롤백
+@Import(TestcontainersConfiguration.class)
 public class ProductFindServiceTestInte {
 
 

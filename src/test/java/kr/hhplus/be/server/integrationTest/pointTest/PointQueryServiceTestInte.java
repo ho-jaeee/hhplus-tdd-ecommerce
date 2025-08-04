@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.integrationTest.pointTest;
 
+import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
 import kr.hhplus.be.server.point.domain.service.PointQueryService;
@@ -8,12 +9,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
+@Import(TestcontainersConfiguration.class)
 public class PointQueryServiceTestInte {
 
     @Autowired

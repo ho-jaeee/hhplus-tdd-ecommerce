@@ -19,7 +19,8 @@ public class PointChargeService {
         this.userPointRepo = userPointRepo;
         this.userPointHistoryRepo = userPointHistoryRepo;
     }
-    @Transactional
+
+
     public UserPointJPA ChargePoint(long userId, long point) {
 
         /*현재 포인트 조회

@@ -9,6 +9,10 @@ import kr.hhplus.be.server.order.domain.service.dto.Order;
 import kr.hhplus.be.server.order.domain.service.dto.OrderItem;
 import kr.hhplus.be.server.order.domain.service.dto.OrderStatus;
 import kr.hhplus.be.server.order.pollicy.OrderPriceCalculator;
+import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
+import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
@@ -16,6 +20,7 @@ import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
 import kr.hhplus.be.server.product.domain.service.ProductHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +28,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderUseCaseImpl implements OrderUseCase {
 
     private final ProductCheckService productCheckService;
@@ -41,7 +47,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
         Long couponId = command.couponId();
         List<OrderItemCommand> items = command.items();
 
-        // 1. 재고 확인 + 차감
+        // 1. 재고 확인
         for (OrderItemCommand item : items) {
             productCheckService.stockCheck(item.productId(), item.quantity());
         }
@@ -51,11 +57,16 @@ public class OrderUseCaseImpl implements OrderUseCase {
             couponCheckService.checkCoupon(userId, couponId);
         }
 
-        // 3. 총 금액 계산 + 쿠폰 할인 적용
+        // 3. 총 금액 계산 + 쿠폰 할인 적용 + 쿠폰사용 시 used로 변경
         long totalPrice = OrderPriceCalculator.calculateTotalPrice(items);
-        int discountPercent = (couponId != null)
-                ? couponDiscountService.getDiscountPercent(couponId)
-                : 0;
+        int discountPercent;
+
+        if(couponId != null) {
+            discountPercent = couponDiscountService.getDiscountPercent(couponId);
+            couponDiscountService.useCoupon(userId, couponId);
+        }else {
+            discountPercent =0;
+        }
         long discountedPrice = totalPrice * (100 - discountPercent) / 100;
 
         // 4. 포인트 차감
@@ -65,7 +76,6 @@ public class OrderUseCaseImpl implements OrderUseCase {
         Order order = Order.create(userId, couponId, totalPrice, discountedPrice, OrderStatus.PAID,
                 LocalDateTime.now(), LocalDateTime.now());
         Order savedOrder = orderSaveService.save(order);
-
 
         // 6. 주문 아이템 저장
         List<OrderItem> orderItems = items.stream()
@@ -119,6 +129,5 @@ public class OrderUseCaseImpl implements OrderUseCase {
                 savedOrder.getStatus().name()
         );
     }
-
 }
 

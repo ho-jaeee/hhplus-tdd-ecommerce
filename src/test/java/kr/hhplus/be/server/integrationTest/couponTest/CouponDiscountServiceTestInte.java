@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.integrationTest.couponTest;
 
 
+import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
+@Import(TestcontainersConfiguration.class)
 public class CouponDiscountServiceTestInte {
 
     @Autowired
@@ -43,6 +45,8 @@ public class CouponDiscountServiceTestInte {
                         LocalDateTime.now()              // updatedAt
                 )
         );
+
+
     }
 
     @Test
@@ -53,5 +57,11 @@ public class CouponDiscountServiceTestInte {
 
         // then
         assertThat(discount).isEqualTo(15);
+    }
+
+    @Test
+    @DisplayName("CouponDiscountService: 사용자가 가지고 있는 쿠폰 사용으로 변경")
+    void useCoupon_returnTrue(){
+
     }
 }

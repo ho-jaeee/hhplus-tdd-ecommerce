@@ -20,7 +20,7 @@ public class PointUseService {
         this.userPointHistoryRepo = userPointHistoryRepo;
     }
 
-    @Transactional
+
     public UserPointJPA usePoint(long userId, long point) {
 
         /*현재 포인트 조회

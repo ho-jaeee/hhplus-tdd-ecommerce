@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.controller.dto;
 
-import kr.hhplus.be.server.order.usecase.OrderCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import lombok.Builder;
 
 import java.util.List;

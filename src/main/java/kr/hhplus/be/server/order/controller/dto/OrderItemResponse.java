@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.controller.dto;
 
-import kr.hhplus.be.server.order.usecase.OrderItemResult;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
 
 public record OrderItemResponse(
         Long productId,

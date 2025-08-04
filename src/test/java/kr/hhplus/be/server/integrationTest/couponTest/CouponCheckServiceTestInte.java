@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.integrationTest.couponTest;
 
 import jakarta.transaction.Transactional;
+import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
@@ -11,13 +12,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@Transactional
+@Import(TestcontainersConfiguration.class)
 public class CouponCheckServiceTestInte {
 
 

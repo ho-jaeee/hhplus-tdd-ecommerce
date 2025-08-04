@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.unittest.orderTest;
 
 import kr.hhplus.be.server.order.pollicy.OrderPriceCalculator;
-import kr.hhplus.be.server.order.usecase.OrderItemCommand;
+import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
