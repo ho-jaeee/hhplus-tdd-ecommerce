@@ -29,7 +29,7 @@ public class CouponIssuedService {
     }
 
     public CouponUser issueCouponToUser(Long couponId, Long userId) {
-        Coupon coupon = couponRepo.findByCouponId(couponId)
+        Coupon coupon = couponRepo.findById(couponId)
                 .map(Coupon::fromEntity) // CouponJPA -> Coupon
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰입니다."));
 

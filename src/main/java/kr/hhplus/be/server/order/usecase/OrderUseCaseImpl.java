@@ -47,15 +47,11 @@ public class OrderUseCaseImpl implements OrderUseCase {
         Long couponId = command.couponId();
         List<OrderItemCommand> items = command.items();
 
-        // 1. 재고 확인
-        for (OrderItemCommand item : items) {
-            productCheckService.stockCheck(item.productId(), item.quantity());
-        }
+        //1. 재고 확인
+        productCheckService.validateAllStock(items);
 
-        // 2. 쿠폰 유효성 검사 (nullable)
-        if (couponId != null) {
-            couponCheckService.checkCoupon(userId, couponId);
-        }
+        //2. 쿠폰 유효성 검사 (nullable)
+        couponCheckService.checkIfValidCouponNullable(userId, couponId);
 
         // 3. 총 금액 계산 + 쿠폰 할인 적용 + 쿠폰사용 시 used로 변경
         long totalPrice = OrderPriceCalculator.calculateTotalPrice(items);
@@ -92,7 +88,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
         // 7. 주문 이력 저장
         orderHistoryService.orderInsert(savedOrder, "결제완료");
 
-        // 8. 재고차감 -> 일부러 나중에 함 결제 완료 후
+        // 8. 재고차감 -> 일부러 나중에 함 결제 완료 후 -> 충돌 빈도가 높음
         orderItems.forEach(item ->
                 productDecreaseService.decreaseStock(
                         item.getProductId(),

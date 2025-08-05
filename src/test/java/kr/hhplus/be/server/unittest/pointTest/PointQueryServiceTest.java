@@ -34,7 +34,7 @@ public class PointQueryServiceTest {
         long userId = 1L;
         long existingPoint = 10000L;
         UserPointJPA existing = new UserPointJPA (userId, existingPoint,System.currentTimeMillis());
-        Mockito.when(userPointRepository.findById(userId)).thenReturn(Optional.of(existing));
+        Mockito.when(userPointRepository.findById(userId)).thenReturn(existing);
         /*when*/
         UserPointJPA  result = PointQueryService.GetPoint(userId);
 

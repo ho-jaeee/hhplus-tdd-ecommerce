@@ -9,6 +9,7 @@ import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.order.domain.model.OrderJPA;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.domain.service.dto.OrderStatus;
+import kr.hhplus.be.server.order.usecase.OrderUseCaseImpl;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderResult;
@@ -23,8 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
+
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -32,13 +32,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @SpringBootTest
-@Import(TestcontainersConfiguration.class)
-public class OrderUseCaseTestInte {
+@Import({TestcontainersConfiguration.class, OrderUseCaseImpl.class})
+public class OrderUseCaseTestIntegration {
 
     @Autowired
     OrderUseCase orderUseCase;
+
 
     @Autowired
     ProductRepository productRepository;

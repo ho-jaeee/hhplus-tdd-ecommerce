@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PointQueryControllerTestInte {
+public class PointQueryControllerTestIntegration {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,7 +46,7 @@ public class PointQueryControllerTestInte {
                 .andExpect(jsonPath("$.point").value(10000L));
 
         // DB 직접 조회로 값 검증
-        UserPointJPA userPoint = userPointRepository.findById(userId).orElseThrow();
+        UserPointJPA userPoint = userPointRepository.findById(userId);
         assertThat(userPoint.getPoint()).isEqualTo(10000L);
     }
 }
