@@ -1,14 +1,15 @@
 package kr.hhplus.be.server.coupon.domain.repository;
 
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CouponRepository extends CrudRepository<CouponJPA, Long> {
+public interface CouponRepository{
 
-    Optional<CouponJPA> findByCouponId(Long couponId);
+    Optional<CouponJPA> findById(Long couponId);
+
+    CouponJPA save(CouponJPA couponJPA);
 
     List<CouponJPA> findAll();
 }

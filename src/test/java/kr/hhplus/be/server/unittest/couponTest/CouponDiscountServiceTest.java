@@ -52,7 +52,7 @@ public class CouponDiscountServiceTest {
                 LocalDateTime.now()
         );
 
-        given(couponRepository.findByCouponId(couponId))
+        given(couponRepository.findById(couponId))
                 .willReturn(Optional.of(coupon.toEntity()));
 
         // when

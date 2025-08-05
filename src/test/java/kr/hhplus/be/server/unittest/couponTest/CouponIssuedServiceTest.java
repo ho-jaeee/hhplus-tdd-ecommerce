@@ -59,7 +59,7 @@ public class CouponIssuedServiceTest {
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
-        given(couponRepository.findByCouponId(couponId)).willReturn(Optional.of(coupon.toEntity()));
+        given(couponRepository.findById(couponId)).willReturn(Optional.of(coupon.toEntity()));
         given(couponUserRepository.findByUserIdAndCouponId(userId, couponId)).willReturn(Optional.empty());
         given(couponUserRepository.save(any())).willAnswer(invocation -> invocation.getArgument(0));
 

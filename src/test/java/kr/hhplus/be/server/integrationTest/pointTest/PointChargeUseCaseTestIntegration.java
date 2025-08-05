@@ -10,14 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
-public class PointChargeUseCaseTestInte {
+public class PointChargeUseCaseTestIntegration {
 
     @Autowired
     private PointChargeUseCase pointChargeUseCase;
@@ -40,7 +39,7 @@ public class PointChargeUseCaseTestInte {
         // then: DB에 반영된 결과 확인
         assertThat(response.point()).isEqualTo(initialPoint + chargeAmount);
 
-        UserPointJPA updatedUserPoint = userPointRepository.findById(userId).orElseThrow();
+        UserPointJPA updatedUserPoint = userPointRepository.findById(userId);
         assertThat(updatedUserPoint.getPoint()).isEqualTo(initialPoint + chargeAmount);
     }
 

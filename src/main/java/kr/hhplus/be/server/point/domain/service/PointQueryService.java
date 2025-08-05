@@ -16,8 +16,7 @@ public class PointQueryService {
 
     public UserPointJPA GetPoint(long userId){
 
-        return userPointRepo.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User point not found for userId: " + userId));
+        return userPointRepo.findById(userId);
 
     }
 }
