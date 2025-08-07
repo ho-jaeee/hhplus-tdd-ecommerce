@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.integrationTest.couponTest;
 
-import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
@@ -20,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
-public class CouponCheckServiceTestInte {
+public class CouponCheckServiceTestIntegration {
 
 
     @Autowired

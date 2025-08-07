@@ -33,7 +33,7 @@ public class ProductStockCheckTest {
         void validateStock_success() {
             // given
             ProductJPA product = new ProductJPA(
-                    1L, "상품", 1000L, 10,
+                    1L, "상품", 1000L, 10, null,
                     LocalDateTime.now(), LocalDateTime.now()
             );
             given(productRepository.findById(1L)).willReturn(Optional.of(product));
@@ -48,7 +48,7 @@ public class ProductStockCheckTest {
     void validateStock_insufficient() {
         // given
         ProductJPA product = new ProductJPA(
-                1L, "상품", 1000L, 2,
+                1L, "상품", 1000L, 2, null,
                 LocalDateTime.now(), LocalDateTime.now()
         );
         given(productRepository.findById(1L)).willReturn(Optional.of(product));

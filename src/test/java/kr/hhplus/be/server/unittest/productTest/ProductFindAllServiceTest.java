@@ -29,8 +29,8 @@ public class ProductFindAllServiceTest {
     @DisplayName("전체 상품 조회 - 성공")
     void findAllProducts() {
         // given
-        ProductJPA product1 = new ProductJPA(1L, "상품A", 10000L, 10, null, null);
-        ProductJPA product2 = new ProductJPA(2L, "상품B", 20000L, 5, null, null);
+        ProductJPA product1 = new ProductJPA(1L, "상품A", 10000L, 10, null, null,null);
+        ProductJPA product2 = new ProductJPA(2L, "상품B", 20000L, 5, null, null, null);
         List<ProductJPA> expectedProducts = List.of(product1, product2);
 
         when(productRepository.findAll()).thenReturn(expectedProducts);

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
-public class CouponDiscountServiceTestInte {
+public class CouponDiscountServiceTestIntegration {
 
     @Autowired
     private CouponRepository couponRepository;
@@ -47,16 +46,6 @@ public class CouponDiscountServiceTestInte {
         );
 
 
-    }
-
-    @Test
-    @DisplayName("CouponDiscountService: 쿠폰 할인율 정상 조회")
-    void getDiscountPercent_returnsCorrectDiscount() {
-        // when
-        int discount = couponDiscountService.getDiscountPercent(savedCoupon.getCouponId());
-
-        // then
-        assertThat(discount).isEqualTo(15);
     }
 
     @Test

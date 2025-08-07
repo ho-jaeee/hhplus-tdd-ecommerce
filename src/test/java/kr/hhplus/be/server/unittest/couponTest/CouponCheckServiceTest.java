@@ -59,7 +59,7 @@ public class CouponCheckServiceTest {
                  userId, couponId, false, null, LocalDateTime.now()
         );
 
-        given(couponRepository.findByCouponId(couponId)).willReturn(Optional.of(coupon.toEntity()));
+        given(couponRepository.findById(couponId)).willReturn(Optional.of(coupon.toEntity()));
         given(couponUserRepository.findByUserIdAndCouponId(userId, couponId)).willReturn(Optional.of(couponUser.toEntity()));
 
 
@@ -72,7 +72,7 @@ public class CouponCheckServiceTest {
     void checkCoupon_notFound() {
 
         // given
-        given(couponRepository.findByCouponId(couponId)).willReturn(Optional.empty());
+        given(couponRepository.findById(couponId)).willReturn(Optional.empty());
 
         // expect
         assertThatThrownBy(() -> service.checkCoupon(userId, couponId))
@@ -90,7 +90,7 @@ public class CouponCheckServiceTest {
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now(), LocalDateTime.now()
         );
-        given(couponRepository.findByCouponId(couponId)).willReturn(Optional.of(expiredCoupon.toEntity()));
+        given(couponRepository.findById(couponId)).willReturn(Optional.of(expiredCoupon.toEntity()));
 
         // expect
         assertThatThrownBy(() -> service.checkCoupon(userId, couponId))
@@ -108,7 +108,7 @@ public class CouponCheckServiceTest {
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now(), LocalDateTime.now()
         );
-        given(couponRepository.findByCouponId(couponId)).willReturn(Optional.of(validCoupon.toEntity()));
+        given(couponRepository.findById(couponId)).willReturn(Optional.of(validCoupon.toEntity()));
         given(couponUserRepository.findByUserIdAndCouponId(userId, couponId)).willReturn(Optional.empty());
 
         // expect
@@ -132,7 +132,7 @@ public class CouponCheckServiceTest {
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().minusDays(2)
         );
-        given(couponRepository.findByCouponId(couponId)).willReturn(Optional.of(validCoupon.toEntity()));
+        given(couponRepository.findById(couponId)).willReturn(Optional.of(validCoupon.toEntity()));
         given(couponUserRepository.findByUserIdAndCouponId(userId, couponId)).willReturn(Optional.of(usedCoupon.toEntity()));
 
         // expect

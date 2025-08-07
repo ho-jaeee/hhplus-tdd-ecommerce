@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class OrderControllerTestInte {
+public class OrderControllerTestIntegration {
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,10 +55,10 @@ public class OrderControllerTestInte {
 
         // 실제 상품 2개 등록
         ProductJPA product1 = productRepository.save(new ProductJPA(
-                null, "티셔츠", 15000L, 10, LocalDateTime.now(), LocalDateTime.now()
+                null, "티셔츠", 15000L, 10, null, LocalDateTime.now(), LocalDateTime.now()
         ));
         ProductJPA product2 = productRepository.save(new ProductJPA(
-                null, "바지", 20000L, 10, LocalDateTime.now(), LocalDateTime.now()
+                null, "바지", 20000L, 10, null, LocalDateTime.now(), LocalDateTime.now()
         ));
         productId1 = product1.getProductId();
         productId2 = product2.getProductId();

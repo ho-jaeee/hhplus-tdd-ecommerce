@@ -17,6 +17,11 @@ public class CouponCheckService {
     private final CouponRepository couponRepository;
     private final CouponUserRepository couponUserRepository;
 
+    public void checkIfValidCouponNullable(Long userId, Long couponId) {
+        if (couponId == null) return;
+        checkCoupon(userId, couponId);
+    }
+
     public void checkCoupon(long userId, long couponId) {
         Coupon coupon = couponRepository.findById(couponId)
                 .map(Coupon::fromEntity)  // JPA → 도메인 변환

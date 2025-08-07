@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
-public class ProductDecreaseServiceTestInte {
+public class ProductDecreaseServiceTestIntegration {
 
     @Autowired
     private ProductRepository productRepository;
@@ -30,7 +29,7 @@ public class ProductDecreaseServiceTestInte {
     void decreaseStock_success() {
         // given - 실제 DB에 저장
         ProductJPA savedProduct = productRepository.save(new ProductJPA(
-                null, "상품", 5000L, 10, LocalDateTime.now(), LocalDateTime.now()
+                null, "상품", 5000L, 10, null, LocalDateTime.now(), LocalDateTime.now()
         ));
 
         // when
