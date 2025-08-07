@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.order.usecase;
 
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
-import kr.hhplus.be.server.order.domain.service.OrderTransactionService;
+import kr.hhplus.be.server.order.domain.service.OrderTransactionServiceImpl;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderResult;
@@ -18,7 +18,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
     private final ProductCheckService productCheckService;
     private final CouponCheckService couponCheckService;
-    private final OrderTransactionService orderTransactionService;
+    private final OrderTransactionServiceImpl orderTransactionService;
 
     @Override
     // @Transactional
