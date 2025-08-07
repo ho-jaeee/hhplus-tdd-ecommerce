@@ -13,21 +13,25 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final SpringDataProductRepository jpaRepository;
 
     public ProductRepositoryImpl(SpringDataProductRepository jpaRepository) {
+
         this.jpaRepository = jpaRepository;
     }
 
     @Override
     public Optional<ProductJPA> findById(long id) {
+
         return jpaRepository.findById(id);
     }
 
     @Override
     public ProductJPA save(ProductJPA product) {
+
         return jpaRepository.save(product);
     }
 
     @Override
     public List<ProductJPA> findAll() {
+
         return jpaRepository.findAll();
     }
 }

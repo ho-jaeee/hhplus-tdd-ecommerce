@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.coupon.infrastructure;
 
+
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import org.springframework.stereotype.Repository;
@@ -29,5 +30,15 @@ public class CouponUserRepositoryImpl implements CouponUserRepository {
     @Override
     public CouponUserJPA save(CouponUserJPA couponUserJPA) {
         return jpaRepository.save(couponUserJPA);
+    }
+
+    @Override
+    public long count() {
+        return jpaRepository.count();
+    }
+
+    @Override
+    public Optional<CouponUserJPA> findByUserIdAndCouponIdForUpdate(Long userId, Long couponId) {
+        return jpaRepository.findByUserIdAndCouponIdForUpdate(userId, couponId);
     }
 }

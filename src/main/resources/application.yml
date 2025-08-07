@@ -21,11 +21,13 @@ spring:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
       format_sql: true
+      use_sql_comments: true
 
-      logging:
-        level:
-          org.hibernate.SQL: DEBUG
-          org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.transaction.interceptor: trace
 
 ---
 spring.config.activate.on-profile: local, test

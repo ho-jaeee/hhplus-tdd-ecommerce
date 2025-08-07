@@ -13,7 +13,7 @@ public class ProductDecreaseService {
 
     private final ProductRepository productRepository;
 
-    @Transactional
+    //@Transactional
     public void decreaseStock(long productId, int amount) {
         ProductJPA product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));

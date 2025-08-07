@@ -18,6 +18,7 @@ public class ProductHistoryRepositoryImpl implements ProductHistoryRepository {
 
     @Override
     public ProductHistoryJPA save(ProductHistoryJPA productHistory) {
+
         return jpaRepository.save(productHistory);
     }
 

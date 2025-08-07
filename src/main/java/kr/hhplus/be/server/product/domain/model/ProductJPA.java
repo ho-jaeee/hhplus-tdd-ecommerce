@@ -26,6 +26,9 @@ public class ProductJPA {
 
     private int quantity;
 
+    @Version
+    private Long version;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

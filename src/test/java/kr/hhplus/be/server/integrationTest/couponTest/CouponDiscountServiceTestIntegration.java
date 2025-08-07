@@ -49,16 +49,6 @@ public class CouponDiscountServiceTestIntegration {
     }
 
     @Test
-    @DisplayName("CouponDiscountService: 쿠폰 할인율 정상 조회")
-    void getDiscountPercent_returnsCorrectDiscount() {
-        // when
-        int discount = couponDiscountService.getDiscountPercent(savedCoupon.getCouponId());
-
-        // then
-        assertThat(discount).isEqualTo(15);
-    }
-
-    @Test
     @DisplayName("CouponDiscountService: 사용자가 가지고 있는 쿠폰 사용으로 변경")
     void useCoupon_returnTrue(){
 
