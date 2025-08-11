@@ -25,6 +25,21 @@ spring:
       format_sql: true
       use_sql_comments: true
 
+redisson:
+  config: |
+    clusterServersConfig:
+      nodeAddresses:
+        - "redis://127.0.0.1:7011"
+        - "redis://127.0.0.1:7012"
+        - "redis://127.0.0.1:7013"
+        - "redis://127.0.0.1:7014"
+        - "redis://127.0.0.1:7015"
+        - "redis://127.0.0.1:7016"
+      scanInterval: 2000
+    lockWatchdogTimeout: 30000
+    threads: 16
+    nettyThreads: 32
+
 logging:
   level:
     org.hibernate.SQL: debug
@@ -39,3 +54,4 @@ spring:
     url: jdbc:mysql://localhost:3306/hhplus?characterEncoding=UTF-8&serverTimezone=UTC
     username: application
     password: application
+

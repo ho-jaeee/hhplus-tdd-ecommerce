@@ -50,11 +50,15 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+
 	//lombok
 	compileOnly("org.projectlombok:lombok:1.18.32")
 	annotationProcessor("org.projectlombok:lombok:1.18.32")
 	testCompileOnly("org.projectlombok:lombok:1.18.32")
 	testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
+
+    // Redisson
+    implementation("org.redisson:redisson-spring-boot-starter:3.27.2")
 
 }
 
