@@ -21,7 +21,6 @@ public class OrderUseCaseImpl implements OrderUseCase {
     private final OrderTransactionServiceImpl orderTransactionService;
 
     @Override
-    // @Transactional
     public OrderResult createOrder(OrderCommand command) {
         Long userId = command.userId();
         Long couponId = command.couponId();
@@ -35,7 +34,6 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
         // 3. 실제 주문 생성 로직은 트랜잭션 포함된 서비스에 위임
         return orderTransactionService.execute(command);
-
 
     }
 }

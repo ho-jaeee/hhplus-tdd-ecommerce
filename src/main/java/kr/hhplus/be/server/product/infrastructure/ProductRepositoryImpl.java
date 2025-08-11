@@ -34,4 +34,9 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         return jpaRepository.findAll();
     }
+
+    @Override
+    public void flush() {
+        jpaRepository.flush();
+    }
 }

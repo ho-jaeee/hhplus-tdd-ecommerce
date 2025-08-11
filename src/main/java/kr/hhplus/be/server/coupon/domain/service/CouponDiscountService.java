@@ -20,7 +20,7 @@ public class CouponDiscountService {
     private final CouponUserRepository couponUserRepository;
 
 
-   //@Transactional
+
     public int useCoupon(Long userId, Long couponId) {
         System.out.println("트랜잭션 활성 여부: " + TransactionSynchronizationManager.isActualTransactionActive());
 

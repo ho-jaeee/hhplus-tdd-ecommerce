@@ -1,7 +1,7 @@
 package kr.hhplus.be.server;
 
 import jakarta.annotation.PreDestroy;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.MySQLContainer;

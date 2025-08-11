@@ -11,6 +11,8 @@ public interface ProductRepository {
     Optional<ProductJPA> findById(long id);
     ProductJPA save(ProductJPA product);
     List<ProductJPA> findAll();
+    void flush();
+
 
 
 }

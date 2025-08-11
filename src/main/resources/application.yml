@@ -7,9 +7,11 @@ spring:
     name: HangHaePlusDataSource
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      maximum-pool-size: 3
-      connection-timeout: 10000
-      max-lifetime: 60000
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 600000   # 10m
+      max-lifetime: 1800000 # 30m (RDS 기본 커넥션 만료보다 짧게)
+      connection-timeout: 30000
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     open-in-view: false
