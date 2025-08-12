@@ -12,9 +12,4 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface SpringDataUserPointRepository extends JpaRepository<UserPointJPA, Long> {
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT u FROM UserPointJPA u WHERE u.userId = :userId")
-    @QueryHints(@QueryHint(name="jakarta.persistence.lock.timeout", value="2000"))
-    Optional<UserPointJPA> findByIdForUpdate(@Param("userId") Long userId);
 }

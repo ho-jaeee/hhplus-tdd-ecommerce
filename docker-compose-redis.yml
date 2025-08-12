@@ -15,7 +15,7 @@ services:
                    --cluster-node-timeout 5000
                    --appendonly yes
                    --dir /data
-                   --cluster-announce-ip 172.28.0.11
+                   --cluster-announce-ip host.docker.internal
                    --cluster-announce-port 7011
                    --cluster-announce-bus-port 17011
     volumes:
@@ -32,6 +32,9 @@ services:
 
   redis-7012:
     image: redis:7.2
+    ports:
+      - "7012:7012"
+      - "17012:17012"
     container_name: redis-7012
     command: >
       redis-server --port 7012
@@ -40,7 +43,7 @@ services:
                    --cluster-node-timeout 5000
                    --appendonly yes
                    --dir /data
-                   --cluster-announce-ip 172.28.0.12
+                   --cluster-announce-ip host.docker.internal
                    --cluster-announce-port 7012
                    --cluster-announce-bus-port 17012
     volumes:
@@ -57,6 +60,9 @@ services:
 
   redis-7013:
     image: redis:7.2
+    ports:
+      - "7013:7013"
+      - "17013:17013"
     container_name: redis-7013
     command: >
       redis-server --port 7013
@@ -65,7 +71,7 @@ services:
                    --cluster-node-timeout 5000
                    --appendonly yes
                    --dir /data
-                   --cluster-announce-ip 172.28.0.13
+                   --cluster-announce-ip host.docker.internal
                    --cluster-announce-port 7013
                    --cluster-announce-bus-port 17013
     volumes:
@@ -82,6 +88,9 @@ services:
 
   redis-7014:
     image: redis:7.2
+    ports:
+      - "7014:7014"
+      - "17014:17014"
     container_name: redis-7014
     command: >
       redis-server --port 7014
@@ -90,7 +99,7 @@ services:
                    --cluster-node-timeout 5000
                    --appendonly yes
                    --dir /data
-                   --cluster-announce-ip 172.28.0.14
+                   --cluster-announce-ip host.docker.internal
                    --cluster-announce-port 7014
                    --cluster-announce-bus-port 17014
     volumes:
@@ -107,6 +116,9 @@ services:
 
   redis-7015:
     image: redis:7.2
+    ports:
+      - "7015:7015"
+      - "17015:17015"
     container_name: redis-7015
     command: >
       redis-server --port 7015
@@ -115,7 +127,7 @@ services:
                    --cluster-node-timeout 5000
                    --appendonly yes
                    --dir /data
-                   --cluster-announce-ip 172.28.0.15
+                   --cluster-announce-ip host.docker.internal
                    --cluster-announce-port 7015
                    --cluster-announce-bus-port 17015
     volumes:
@@ -132,6 +144,9 @@ services:
 
   redis-7016:
     image: redis:7.2
+    ports:
+      - "7016:7016"
+      - "17016:17016"
     container_name: redis-7016
     command: >
       redis-server --port 7016
@@ -140,7 +155,7 @@ services:
                    --cluster-node-timeout 5000
                    --appendonly yes
                    --dir /data
-                   --cluster-announce-ip 172.28.0.16
+                   --cluster-announce-ip host.docker.internal
                    --cluster-announce-port 7016
                    --cluster-announce-bus-port 17016
     volumes:

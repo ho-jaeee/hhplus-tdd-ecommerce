@@ -8,6 +8,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Import(RedissonTestConfig.class)
+@ActiveProfiles("test")
 public class RedissonLockSmokeTest {
 
     @Autowired
@@ -22,17 +24,29 @@ public class RedissonLockSmokeTest {
 
     @Test
     void lock_basic_acquire_and_release() throws Exception {
-        String key = "lock:{product}:1001"; // 해시태그로 슬롯 고정 → 특정 마스터에서 처리
+
+        // 같은 슬롯 고정(선택): {product} 해시태그
+        String key = "lock:{product}:1001";
         RLock lock = redisson.getLock(key);
 
-        boolean ok = lock.tryLock(300, TimeUnit.MILLISECONDS); // wait만 지정 → watchdog ON
-        assertThat(ok).isTrue();
+        // wait=300ms, lease=2s (watchdog 의존 최소화)
+        boolean ok = lock.tryLock(300, 2_000, TimeUnit.MILLISECONDS);
+        assertThat(ok).as("첫 락 획득").isTrue();
+
         try {
-            // 임계구간
             assertThat(lock.isLocked()).isTrue();
             assertThat(lock.isHeldByCurrentThread()).isTrue();
         } finally {
-            lock.unlock(); // 해제
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
+
+        // 해제 후 재획득 가능해야 함
+        boolean ok2 = lock.tryLock(300, 2_000, TimeUnit.MILLISECONDS);
+        assertThat(ok2).as("해제 후 재락 획득").isTrue();
+        if (lock.isHeldByCurrentThread()) {
+            lock.unlock();
         }
     }
 }

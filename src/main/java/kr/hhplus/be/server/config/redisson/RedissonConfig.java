@@ -13,6 +13,7 @@ import java.io.IOException;
 
 
 @Configuration
+@Profile("!test")
 public class RedissonConfig {
     @Value("${redisson.config}")
     private String redissonConfig;
