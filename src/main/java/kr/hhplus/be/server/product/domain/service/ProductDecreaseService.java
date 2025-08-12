@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -30,42 +28,19 @@ public class ProductDecreaseService {
         product.decreaseQuantity(amount);
     }
 
-    public void decreaseStocksWithRetry(List<OrderItemCommand> items) {
-        final int maxRetry = 3;
-        final long[] backoffMs = {50L, 100L, 200L};
-
+    public void decreaseStocks(List<OrderItemCommand> items) {
+        // 데드락 예방 차원에서 정렬(일관된 처리 순서)
         List<OrderItemCommand> sorted = items.stream()
                 .sorted(Comparator.comparingLong(OrderItemCommand::productId))
                 .toList();
 
-        for (int attempt = 1; attempt <= maxRetry; attempt++) {
-            try {
-                decreaseStocksOnce(sorted);   // 성공하면 종료
-                return;
-            } catch (ObjectOptimisticLockingFailureException | OptimisticLockException ex) {
-                log.warn("[stock] optimistic conflict attempt={}, msg={}", attempt, ex.getMessage());
-                if (attempt == maxRetry) throw ex;
-                sleep(backoffMs[attempt - 1]);
-            }
-        }
-    }
-
-
-    protected void decreaseStocksOnce(List<OrderItemCommand> items) {
-        for (OrderItemCommand i : items) {
+        for (OrderItemCommand i : sorted) {
             ProductJPA p = productRepository.findById(i.productId())
                     .orElseThrow(() -> new IllegalArgumentException("상품 없음: " + i.productId()));
-
-            p.decreaseQuantity(i.quantity());           // 도메인 규칙
-            productRepository.save(p);
-            productRepository.flush();  // 즉시 flush → 버전 충돌 조기 감지
+            p.decreaseQuantity(i.quantity());
         }
-    }
-
-    private static void sleep(long ms) {
-        try { Thread.sleep(ms); } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        productRepository.flush();
     }
 
 }
+

@@ -37,8 +37,4 @@ public class CouponUserRepositoryImpl implements CouponUserRepository {
         return jpaRepository.count();
     }
 
-    @Override
-    public Optional<CouponUserJPA> findByUserIdAndCouponIdForUpdate(Long userId, Long couponId) {
-        return jpaRepository.findByUserIdAndCouponIdForUpdate(userId, couponId);
-    }
 }

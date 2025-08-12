@@ -24,7 +24,7 @@ public class CouponDiscountService {
     public int useCoupon(Long userId, Long couponId) {
         System.out.println("트랜잭션 활성 여부: " + TransactionSynchronizationManager.isActualTransactionActive());
 
-       CouponUserJPA couponUserJPA = couponUserRepository.findByUserIdAndCouponIdForUpdate(userId, couponId)
+       CouponUserJPA couponUserJPA = couponUserRepository.findByUserIdAndCouponId(userId, couponId)
                .orElseThrow(() -> new IllegalArgumentException("해당 쿠폰이 존재하지 않습니다."));
 
       if (Boolean.TRUE.equals(couponUserJPA.getIsUsed())) {

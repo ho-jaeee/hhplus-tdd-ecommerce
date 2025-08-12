@@ -16,8 +16,4 @@ public interface UserPointRepository {
     UserPointJPA save(UserPointJPA userPointJPA);
     void deleteAll();// 테스트용
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT u FROM UserPointJPA u WHERE u.userId = :userId")
-    @QueryHints(@QueryHint(name="jakarta.persistence.lock.timeout", value="2000"))
-    Optional<UserPointJPA> findByIdForUpdate(@Param("userId") Long userId);
 }

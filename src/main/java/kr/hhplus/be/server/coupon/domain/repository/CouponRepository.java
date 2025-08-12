@@ -17,7 +17,5 @@ public interface CouponRepository{
 
     List<CouponJPA> findAll();
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT c FROM CouponJPA c WHERE c.couponId = :couponId")
-    Optional<CouponJPA> findByIdWithLock(@Param("couponId") Long couponId);
+
 }

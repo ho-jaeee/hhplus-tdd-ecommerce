@@ -51,6 +51,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 
+
 	//lombok
 	compileOnly("org.projectlombok:lombok:1.18.32")
 	annotationProcessor("org.projectlombok:lombok:1.18.32")
@@ -58,7 +59,7 @@ dependencies {
 	testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
 
     // Redisson
-    implementation("org.redisson:redisson-spring-boot-starter:3.27.2")
+    implementation("org.redisson:redisson-spring-boot-starter:3.37.0")
 
 }
 

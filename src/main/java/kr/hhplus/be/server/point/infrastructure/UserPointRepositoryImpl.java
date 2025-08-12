@@ -33,10 +33,4 @@ public class UserPointRepositoryImpl implements UserPointRepository {
         jpaRepository.deleteAll();
     }
 
-    @Override
-    public Optional<UserPointJPA> findByIdForUpdate(Long userId) {
-        return jpaRepository.findByIdForUpdate(userId);
-
-
-    }
 }

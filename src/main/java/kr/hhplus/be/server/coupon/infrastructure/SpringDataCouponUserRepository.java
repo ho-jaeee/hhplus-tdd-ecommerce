@@ -14,9 +14,4 @@ import java.util.Optional;
 public interface SpringDataCouponUserRepository extends JpaRepository<CouponUserJPA, Long> {
     Optional<CouponUserJPA> findByUserIdAndCouponId(Long userId, Long couponId);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT c FROM CouponUserJPA c WHERE c.userId = :userId AND c.couponId = :couponId")
-    @QueryHints(@QueryHint(name="jakarta.persistence.lock.timeout", value="2000"))
-    Optional<CouponUserJPA> findByUserIdAndCouponIdForUpdate(@Param("userId") Long userId, @Param("couponId") Long couponId);
-
 }

@@ -31,7 +31,7 @@ public class PointUseService {
          **포인트 사용
          */
 
-        UserPointJPA current = userPointRepo.findByIdForUpdate(userId)
+        UserPointJPA current =Optional.ofNullable(userPointRepo.findById(userId))
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다.: " + userId));
 
         current.use(point);

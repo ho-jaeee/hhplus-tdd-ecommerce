@@ -33,7 +33,7 @@ public class CouponIssuedService {
     public CouponUser issueCouponToUser(Long couponId, Long userId) {
 
         //쿠폰 존재유무 확인
-        CouponJPA couponJPA = couponRepo.findByIdWithLock(couponId)
+        CouponJPA couponJPA = couponRepo.findById(couponId)
                 .orElseThrow(() -> new IllegalArgumentException("쿠폰이 존재하지 않습니다."));
 
         Coupon coupon = Coupon.fromEntity(couponJPA);

@@ -21,8 +21,4 @@ public interface CouponUserRepository{
 
     long count();
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT c FROM CouponUserJPA c WHERE c.userId = :userId AND c.couponId = :couponId")
-    @QueryHints(@QueryHint(name="jakarta.persistence.lock.timeout", value="2000"))
-    Optional<CouponUserJPA>  findByUserIdAndCouponIdForUpdate(@Param("userId") Long userId, @Param("couponId") Long couponId);
 }

@@ -28,7 +28,6 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
         // 1. 재고 수량 확인 (읽기-only → 트랜잭션 필요 없음)
         productCheckService.validateAllStock(items);
-
         // 2. 쿠폰 유효성 검사 (nullable, 읽기-only → 트랜잭션 필요 없음)
         couponCheckService.checkIfValidCouponNullable(userId, couponId);
 

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.io.IOException;
 
-@Profile("!test")
+
 @Configuration
 public class RedissonConfig {
     @Value("${redisson.config}")
