@@ -21,11 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -40,23 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Import({TestcontainersConfiguration.class})
-@org.testcontainers.junit.jupiter.Testcontainers
 public class OrderUseCaseProductConcurrencyTest {
-
-    @Container
-    static GenericContainer<?> redis = new GenericContainer<>("redis:7.2")
-            .withExposedPorts(6379);
-
-    @DynamicPropertySource
-    static void redissonProps(DynamicPropertyRegistry reg) {
-        String host = redis.getHost();
-        Integer port = redis.getMappedPort(6379);
-        reg.add("redisson.config", () -> """
-      singleServerConfig:
-        address: "redis://%s:%d"
-      lockWatchdogTimeout: 30000
-      """.formatted(host, port));
-    }
 
     @Autowired
     OrderUseCase orderUseCase;
@@ -73,11 +54,6 @@ public class OrderUseCaseProductConcurrencyTest {
     @Autowired
     UserPointRepository userPointRepository;
 
-    @Autowired
-    UserPointHistoryRepository userPointHistoryRepository;
-
-    @Autowired
-    OrderRepository orderRepository;
 
     Long userId1;
     Long userId2;

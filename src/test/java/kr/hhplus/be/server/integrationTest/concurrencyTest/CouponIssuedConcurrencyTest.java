@@ -2,10 +2,13 @@ package kr.hhplus.be.server.integrationTest.concurrencyTest;
 
 
 import kr.hhplus.be.server.TestcontainersConfiguration;
+import kr.hhplus.be.server.config.RedissonTestConfig;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.coupon.domain.service.CouponIssuedService;
+import kr.hhplus.be.server.coupon.usecase.CouponIssueCommand;
+import kr.hhplus.be.server.coupon.usecase.CouponIssuedUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,11 +24,11 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Import({TestcontainersConfiguration.class})
+@Import({TestcontainersConfiguration.class, RedissonTestConfig.class})
 public class CouponIssuedConcurrencyTest {
 
     @Autowired
-    private CouponIssuedService couponIssuedService;
+    CouponIssuedUseCase couponIssuedUseCase;
 
     @Autowired
     private CouponRepository couponRepository;
@@ -56,7 +59,6 @@ public class CouponIssuedConcurrencyTest {
     @DisplayName("쿠폰 동시발급 테스트 10개의 쿠폰 20개의 요청")
     void couponIssuedConcurrencyTest() throws InterruptedException {
 
-
         // given
         int threadCount = 20; // 동시 요청 수
         ExecutorService executorService = Executors.newFixedThreadPool(32);
@@ -67,7 +69,7 @@ public class CouponIssuedConcurrencyTest {
             final long userId = i + 1L;
             executorService.submit(() -> {
                 try {
-                    couponIssuedService.issueCouponToUser(couponId, userId);
+                    couponIssuedUseCase.issueCoupon(new CouponIssueCommand(userId, couponId));
                 } catch (Exception e) {
                     // 예외 발생 무시 (중복 발급, 수량 초과 등)
                 } finally {
@@ -77,6 +79,7 @@ public class CouponIssuedConcurrencyTest {
         }
 
         latch.await(); // 모든 요청 완료까지 대기
+        executorService.shutdown();
 
         // then
         long actualIssuedCount = couponUserRepository.count();

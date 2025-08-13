@@ -5,5 +5,6 @@ import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 
 public interface OrderTransactionService {
 
+
     OrderResult execute(OrderCommand command);
 }

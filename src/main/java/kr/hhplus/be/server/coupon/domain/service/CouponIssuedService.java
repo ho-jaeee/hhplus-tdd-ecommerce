@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.coupon.domain.service;
 
 
-import jakarta.transaction.Transactional;
+
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
@@ -9,12 +9,14 @@ import kr.hhplus.be.server.coupon.domain.service.dto.Coupon;
 import kr.hhplus.be.server.coupon.domain.service.dto.CouponUser;
 import kr.hhplus.be.server.coupon.policy.CouponValidator;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
-
 public class CouponIssuedService {
 
 
@@ -41,6 +43,7 @@ public class CouponIssuedService {
         //사용자에게 저장된 쿠폰 확인
         Optional<CouponUser> existingCoupon = couponUserRepo.findByUserIdAndCouponId(userId, couponId)
                 .map(CouponUser::fromEntity);
+
         couponValidator.validateIssue(coupon, existingCoupon);
 
         //쿠폰 발급 수량증가 및 발급일자 업데이트

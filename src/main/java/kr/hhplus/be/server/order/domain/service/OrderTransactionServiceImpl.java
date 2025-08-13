@@ -33,6 +33,7 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
     private final DomainEventPublisher eventPublisher;
 
 
+
     @Transactional
     public OrderResult execute(OrderCommand command){
         Long userId = command.userId();
@@ -49,10 +50,10 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
         // 2) 포인트 차감
         pointUseService.usePoint(userId, payPoint);
 
-        // 3) 재고 차감 (낙관적 락 + 내부 재시도 권장)
+        // 3) 재고 차감
         productDecreaseService.decreaseStocks(items);
 
-        // 4) 주문/아이템 저장 (한 번에)
+        // 4) 주문/아이템 저장
         Order savedOrder = orderSaveService.save(Order.create(
                 userId, couponId, totalPrice, payPoint, OrderStatus.PAID, now(), now()));
         orderItemSaveService.itemSave(savedOrder.getOrderId(),
