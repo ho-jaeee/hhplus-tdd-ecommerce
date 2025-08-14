@@ -1,45 +1,31 @@
 package kr.hhplus.be.server.order.usecase;
 
 import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
-import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
-import kr.hhplus.be.server.order.domain.service.OrderItemSaveService;
-import kr.hhplus.be.server.order.domain.service.OrderSaveService;
-import kr.hhplus.be.server.order.domain.service.dto.Order;
-import kr.hhplus.be.server.order.domain.service.dto.OrderItem;
-import kr.hhplus.be.server.order.domain.service.dto.OrderStatus;
-import kr.hhplus.be.server.order.pollicy.OrderPriceCalculator;
+import kr.hhplus.be.server.order.domain.service.OrderTransactionServiceImpl;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
-import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
 import kr.hhplus.be.server.order.usecase.dto.OrderResult;
-import kr.hhplus.be.server.point.domain.service.PointUseService;
-import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
-import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
-import kr.hhplus.be.server.product.domain.service.ProductHistoryService;
 import lombok.RequiredArgsConstructor;
+import org.redisson.RedissonMultiLock;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class OrderUseCaseImpl implements OrderUseCase {
 
     private final ProductCheckService productCheckService;
     private final CouponCheckService couponCheckService;
-    private final CouponDiscountService couponDiscountService;
-    private final PointUseService pointUseService;
-    private final OrderSaveService orderSaveService;
-    private final OrderItemSaveService orderItemSaveService;
-    private final OrderHistoryService orderHistoryService;
-    private final ProductDecreaseService productDecreaseService;
-    private final ProductHistoryService productHistoryService;
+    private final OrderTransactionServiceImpl orderTransactionService;
+    private final RedissonClient redisson;
 
     @Override
     public OrderResult createOrder(OrderCommand command) {
@@ -47,87 +33,45 @@ public class OrderUseCaseImpl implements OrderUseCase {
         Long couponId = command.couponId();
         List<OrderItemCommand> items = command.items();
 
-        // 1. 재고 확인
-        for (OrderItemCommand item : items) {
-            productCheckService.stockCheck(item.productId(), item.quantity());
+        // --- 1) 멀티락 키 구성: [쿠폰] -> [포인트] -> [상품들(정렬)] ---
+        List<String> keys = new ArrayList<>();
+        if (couponId != null) keys.add("lock:coupon:{" + couponId + "}");
+        keys.add("lock:point:{" + userId + "}");
+        items.stream()
+                .map(i -> "lock:product:{" + i.productId() + "}")
+                .sorted(Comparator.naturalOrder())
+                .forEach(keys::add);
+
+        RLock[] locks = keys.stream().map(redisson::getLock).toArray(RLock[]::new);
+        RedissonMultiLock multiLock = new RedissonMultiLock(locks);
+
+        boolean locked = false;
+        try{
+            // waitTime=2s (필요시 조정). leaseTime 미지정 → 워치독 자동 연장(기본 30s)
+            locked = multiLock.tryLock(5, TimeUnit.SECONDS);
+            if (!locked) throw new IllegalStateException("잠시 후 다시 시도해주세요.");
+
+            // 1. 재고 수량 확인 (읽기-only → 트랜잭션 필요 없음)
+            productCheckService.validateAllStock(items);
+            // 2. 쿠폰 유효성 검사 (nullable, 읽기-only → 트랜잭션 필요 없음)
+            couponCheckService.checkIfValidCouponNullable(userId, couponId);
+            // 3. 실제 주문 생성 로직은 트랜잭션 포함된 서비스에 위임
+            return orderTransactionService.execute(command);
+
+        }catch (InterruptedException ie){
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("락 대기 중 인터럽트", ie);
         }
+        finally {
+            if (locked) {
+                try {
+                    multiLock.unlock();
+                } catch (Exception ignore) {
+                }
+            }
 
-        // 2. 쿠폰 유효성 검사 (nullable)
-        if (couponId != null) {
-            couponCheckService.checkCoupon(userId, couponId);
         }
-
-        // 3. 총 금액 계산 + 쿠폰 할인 적용 + 쿠폰사용 시 used로 변경
-        long totalPrice = OrderPriceCalculator.calculateTotalPrice(items);
-        int discountPercent;
-
-        if(couponId != null) {
-            discountPercent = couponDiscountService.getDiscountPercent(couponId);
-            couponDiscountService.useCoupon(userId, couponId);
-        }else {
-            discountPercent =0;
-        }
-        long discountedPrice = totalPrice * (100 - discountPercent) / 100;
-
-        // 4. 포인트 차감
-        pointUseService.usePoint(userId, discountedPrice);
-
-        // 5. 주문 생성 및 저장
-        Order order = Order.create(userId, couponId, totalPrice, discountedPrice, OrderStatus.PAID,
-                LocalDateTime.now(), LocalDateTime.now());
-        Order savedOrder = orderSaveService.save(order);
-
-        // 6. 주문 아이템 저장
-        List<OrderItem> orderItems = items.stream()
-                .map(i -> OrderItem.create(
-                        savedOrder.getOrderId(),
-                        i.productId(),
-                        i.productName(),
-                        i.pricePerUnit(),
-                        i.quantity()
-                ))
-                .toList();
-        orderItemSaveService.itemSave(savedOrder.getOrderId(),orderItems);
-
-        // 7. 주문 이력 저장
-        orderHistoryService.orderInsert(savedOrder, "결제완료");
-
-        // 8. 재고차감 -> 일부러 나중에 함 결제 완료 후
-        orderItems.forEach(item ->
-                productDecreaseService.decreaseStock(
-                        item.getProductId(),
-                        item.getQuantity()
-                )
-        );
-
-        // 9. 상품 이력 저장
-        orderItems.forEach(item ->
-                productHistoryService.insertHistory(
-                        item.getProductId(),
-                        item.getOrderId(),
-                        ProductHistoryJPA.ChangeType.SALE,
-                        item.getQuantity(),
-                        item.getProductName(),
-                        item.getPricePerUnit()
-                )
-        );
-
-        // 9. UseCase 응답 객체로 변환
-        return new OrderResult(
-                savedOrder.getOrderId(),
-                savedOrder.getUserId(),
-                savedOrder.getTotalPrice(),
-                savedOrder.getDiscountedTotalPrice(),
-                orderItems.stream()
-                        .map(i -> new OrderItemResult(
-                                i.getProductId(),
-                                i.getProductName(),
-                                i.getQuantity(),
-                                i.getTotalPrice()
-                        ))
-                        .toList(),
-                savedOrder.getStatus().name()
-        );
     }
 }
+
 

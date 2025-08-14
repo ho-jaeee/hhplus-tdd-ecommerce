@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PointChargeControllerTestInte {
+public class PointChargeControllerTestIntegration {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +54,7 @@ public class PointChargeControllerTestInte {
                 .andExpect(status().isOk());
 
         // DB에서 결과 확인
-        UserPointJPA updatedUserPoint = userPointRepository.findById(userId).orElseThrow();
+        UserPointJPA updatedUserPoint = userPointRepository.findById(userId);
         assertThat(updatedUserPoint.getPoint()).isEqualTo(15000L);
     }
 }

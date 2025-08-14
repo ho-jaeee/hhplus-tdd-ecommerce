@@ -6,7 +6,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "coupon_user")
+@Table(name = "coupon_user",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_user_coupon",
+                columnNames = {"user_id", "coupon_id"}
+        ))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,7 +21,9 @@ public class CouponUserJPA {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "user_id", nullable = false)
     private Long userId;
+    @Column(name = "coupon_id", nullable = false)
     private Long couponId;
     private Boolean isUsed;
     private LocalDateTime usedAt;

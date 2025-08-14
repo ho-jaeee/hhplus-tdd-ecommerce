@@ -67,7 +67,7 @@ public class OrderUseCaseTest {
         long discountedPrice = 99000L;
 
         // stub
-        given(couponDiscountService.getDiscountPercent(couponId)).willReturn(discountPercent);
+        given(couponDiscountService.useCoupon(userId, couponId)).willReturn(discountPercent);
 
         Order order = Order.builder()
                 .orderId(999L)

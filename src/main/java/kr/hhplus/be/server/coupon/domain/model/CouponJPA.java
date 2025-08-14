@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "coupon")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -59,6 +60,15 @@ public class CouponJPA {
                 .createdAt(domain.getCreatedAt())
                 .updatedAt(domain.getUpdatedAt())
                 .build();
+    }
+
+    // 비즈니스 행위
+    public void setIssuedQuantity(int value) {
+        this.issuedQuantity = value;
+    }
+
+    public void setUpdatedAt(LocalDateTime time) {
+        this.updatedAt = time;
     }
 
     @PrePersist
