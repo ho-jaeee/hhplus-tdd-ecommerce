@@ -29,7 +29,7 @@ public class ProductDecreaseServiceTestIntegration {
     void decreaseStock_success() {
         // given - 실제 DB에 저장
         ProductJPA savedProduct = productRepository.save(new ProductJPA(
-                null, "상품", 5000L, 10, null, LocalDateTime.now(), LocalDateTime.now()
+                null, "상품", 5000L, 10, LocalDateTime.now(), LocalDateTime.now()
         ));
 
         // when

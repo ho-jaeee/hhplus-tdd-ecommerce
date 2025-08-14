@@ -37,4 +37,5 @@ public class CouponUserRepositoryImpl implements CouponUserRepository {
         return jpaRepository.count();
     }
 
+
 }

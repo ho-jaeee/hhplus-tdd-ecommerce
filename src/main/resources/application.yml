@@ -29,12 +29,12 @@ redisson:
   config: |
     clusterServersConfig:
       nodeAddresses:
-      - "redis://127.0.0.1:7011"
-      - "redis://127.0.0.1:7012"
-      - "redis://127.0.0.1:7013"
-      - "redis://127.0.0.1:7014"
-      - "redis://127.0.0.1:7015"
-      - "redis://127.0.0.1:7016"
+      - "redis://host.docker.internal:7011"
+      - "redis://host.docker.internal:7012"
+      - "redis://host.docker.internal:7013"
+      - "redis://host.docker.internal:7014"
+      - "redis://host.docker.internal:7015"
+      - "redis://host.docker.internal:7016"
       scanInterval: 2000
     lockWatchdogTimeout: 30000
     threads: 16

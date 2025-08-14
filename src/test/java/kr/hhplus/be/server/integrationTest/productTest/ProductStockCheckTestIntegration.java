@@ -31,7 +31,7 @@ public class ProductStockCheckTestIntegration {
     void validateStock_success() {
         // given - 실제 DB에 데이터 저장
         ProductJPA product = productRepository.save(new ProductJPA(
-                null, "상품", 1000L, 10, null,
+                null, "상품", 1000L, 10,
                 LocalDateTime.now(), LocalDateTime.now()
         ));
 
@@ -45,7 +45,7 @@ public class ProductStockCheckTestIntegration {
     void validateStock_insufficient() {
         // given
         ProductJPA product = productRepository.save(new ProductJPA(
-                null, "상품", 1000L, 2, null,
+                null, "상품", 1000L, 2,
                 LocalDateTime.now(), LocalDateTime.now()
         ));
 

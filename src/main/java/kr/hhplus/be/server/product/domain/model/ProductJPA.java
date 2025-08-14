@@ -2,16 +2,14 @@ package kr.hhplus.be.server.product.domain.model;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "product")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProductJPA {
@@ -25,8 +23,6 @@ public class ProductJPA {
     private Long price;
 
     private int quantity;
-
-    private Long version;
 
     private LocalDateTime createdAt;
 

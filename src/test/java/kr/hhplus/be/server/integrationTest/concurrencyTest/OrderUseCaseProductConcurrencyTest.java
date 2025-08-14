@@ -1,17 +1,14 @@
 package kr.hhplus.be.server.integrationTest.concurrencyTest;
 
-
 import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
-import kr.hhplus.be.server.order.domain.repository.OrderRepository;
 import kr.hhplus.be.server.order.usecase.OrderUseCase;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
-import kr.hhplus.be.server.point.domain.repository.UserPointHistoryRepository;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
 import kr.hhplus.be.server.product.domain.model.ProductJPA;
 import kr.hhplus.be.server.product.domain.repository.ProductRepository;
@@ -21,8 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -41,49 +36,32 @@ public class OrderUseCaseProductConcurrencyTest {
 
     @Autowired
     OrderUseCase orderUseCase;
-
     @Autowired
     ProductRepository productRepository;
-
     @Autowired
     CouponRepository couponRepository;
-
     @Autowired
     CouponUserRepository couponUserRepository;
+    @Autowired UserPointRepository userPointRepository;
 
-    @Autowired
-    UserPointRepository userPointRepository;
-
-
-    Long userId1;
-    Long userId2;
-    Long productId1;
-    Long productId2;
-    Long couponId;
-
+    Long userId1, userId2, productId1, productId2, couponId;
 
     @BeforeEach
-    @Transactional
     void setUp() {
         userId1 = 1L;
         userId2 = 2L;
 
-        // 상품 1
         productId1 = productRepository.save(new ProductJPA(
-                null, "키보드", 50000L, 1,
-                null, LocalDateTime.now(), LocalDateTime.now()
+                null, "키보드", 50000L, 1, LocalDateTime.now(), LocalDateTime.now()
         )).getProductId();
 
-        // 상품 2
         productId2 = productRepository.save(new ProductJPA(
-                null, "마우스", 30000L, 1,
-                null, LocalDateTime.now(), LocalDateTime.now()
+                null, "마우스", 30000L, 1, LocalDateTime.now(), LocalDateTime.now()
         )).getProductId();
 
-        // 포인트 세팅
         userPointRepository.save(new UserPointJPA(userId1, 100000L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)));
         userPointRepository.save(new UserPointJPA(userId2, 100000L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)));
-        // 쿠폰 발급
+
         couponId = couponRepository.save(new CouponJPA(
                 null, "10% 할인", 10, 100, 0,
                 LocalDateTime.now().minusDays(1),
@@ -91,66 +69,60 @@ public class OrderUseCaseProductConcurrencyTest {
                 LocalDateTime.now(), LocalDateTime.now()
         )).getCouponId();
 
-        couponUserRepository.save(new CouponUserJPA(
-                null, couponId, userId1, false, null, LocalDateTime.now()
-        ));
-
-        couponUserRepository.save(new CouponUserJPA(
-                null, couponId, userId2, false, null, LocalDateTime.now()
-        ));
+        couponUserRepository.save(new CouponUserJPA(null, couponId, userId1, false, null, LocalDateTime.now()));
+        couponUserRepository.save(new CouponUserJPA(null, couponId, userId2, false, null, LocalDateTime.now()));
     }
 
     @Test
-    @DisplayName("재고가 1개 남은 제품을 2명의 사람이 동시에 주문한다.")
-    void OrderUseCaseProductConcurrency() throws InterruptedException {
-
-        // given
+    @DisplayName("재고 1개 상품을 2명이 '동시에' 주문하면 1성공/1실패가 된다")
+    void OrderUseCaseProductConcurrency() throws Exception {
         OrderCommand order1 = new OrderCommand(
-                userId1, couponId,
-                List.of(new OrderItemCommand(productId1, "키보드", 50000L, 1))
+                userId1, couponId, List.of(new OrderItemCommand(productId1, "키보드", 50000L, 1))
         );
-
         OrderCommand order2 = new OrderCommand(
-                userId2, couponId,
-                List.of(new OrderItemCommand(productId1, "키보드", 50000L, 1))
+                userId2, couponId, List.of(new OrderItemCommand(productId1, "키보드", 50000L, 1))
         );
-
 
         int threadCount = 2;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch latch = new CountDownLatch(threadCount);
+        CountDownLatch startGate = new CountDownLatch(1);
+        CountDownLatch doneGate  = new CountDownLatch(threadCount);
         List<String> results = Collections.synchronizedList(new ArrayList<>());
 
         executorService.submit(() -> {
             try {
+                startGate.await();
                 orderUseCase.createOrder(order1);
                 results.add("user1-success");
             } catch (Throwable e) {
                 results.add("user1-fail");
                 System.out.println("user1 예외: " + e.getMessage());
             } finally {
-                latch.countDown();
+                doneGate.countDown();
             }
         });
 
         executorService.submit(() -> {
             try {
+                startGate.await();
                 orderUseCase.createOrder(order2);
                 results.add("user2-success");
             } catch (Throwable e) {
                 results.add("user2-fail");
                 System.out.println("user2 예외: " + e.getMessage());
             } finally {
-                latch.countDown();
+                doneGate.countDown();
             }
         });
 
-        latch.await();
+        startGate.countDown();
+        if (!doneGate.await(5, java.util.concurrent.TimeUnit.SECONDS)) {
+            throw new AssertionError("작업 타임아웃");
+        }
         executorService.shutdown();
 
-        // then
         long successCount = results.stream().filter(r -> r.contains("success")).count();
-        long failCount = results.stream().filter(r -> r.contains("fail")).count();
+        long failCount    = results.stream().filter(r -> r.contains("fail")).count();
 
         assertThat(successCount).isEqualTo(1);
         assertThat(failCount).isEqualTo(1);

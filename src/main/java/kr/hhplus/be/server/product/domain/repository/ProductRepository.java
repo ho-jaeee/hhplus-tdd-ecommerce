@@ -12,6 +12,7 @@ public interface ProductRepository {
     ProductJPA save(ProductJPA product);
     List<ProductJPA> findAll();
     void flush();
+    void deleteAll(); //테스트용
 
 
 

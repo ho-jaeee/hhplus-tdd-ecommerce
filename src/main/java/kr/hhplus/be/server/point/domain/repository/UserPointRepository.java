@@ -1,14 +1,7 @@
 package kr.hhplus.be.server.point.domain.repository;
 
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.QueryHint;
-import kr.hhplus.be.server.point.domain.model.UserPointJPA;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
-import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 
 public interface UserPointRepository {
 

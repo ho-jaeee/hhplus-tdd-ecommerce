@@ -30,7 +30,7 @@ public class ProductDecreaseServiceTest {
     @DisplayName("재고를 차감한다.")
     void decreaseStock_success() {
         // given
-        ProductJPA product = new ProductJPA(1L, "상품", 5000L, 10, null, LocalDateTime.now(), LocalDateTime.now());
+        ProductJPA product = new ProductJPA(1L, "상품", 5000L, 10, LocalDateTime.now(), LocalDateTime.now());
         given(productRepository.findById(1L)).willReturn(Optional.of(product));
 
         // when

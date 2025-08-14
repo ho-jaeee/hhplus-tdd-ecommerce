@@ -15,5 +15,4 @@ public interface CouponUserRepository{
     CouponUserJPA save(CouponUserJPA couponUserJPA);
 
     long count();
-
 }

@@ -39,4 +39,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public void flush() {
         jpaRepository.flush();
     }
+
+    @Override
+    public void deleteAll() {
+        jpaRepository.deleteAll();
+    }
 }

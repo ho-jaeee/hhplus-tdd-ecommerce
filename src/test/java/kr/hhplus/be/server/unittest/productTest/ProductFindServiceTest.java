@@ -39,7 +39,6 @@ public class ProductFindServiceTest {
                 "MacBook Pro",
                 3000000L,
                 10,
-                null,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );

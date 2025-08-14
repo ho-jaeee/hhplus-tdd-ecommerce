@@ -66,13 +66,13 @@ public class OrderUseCaseCouponConcurrencyTest {
         // 상품 1
         productId1 = productRepository.save(new ProductJPA(
                 null, "키보드", 50000L, 10,
-                null, LocalDateTime.now(), LocalDateTime.now()
+                 LocalDateTime.now(), LocalDateTime.now()
         )).getProductId();
 
         // 상품 2
         productId2 = productRepository.save(new ProductJPA(
                 null, "마우스", 30000L, 10,
-                null, LocalDateTime.now(), LocalDateTime.now()
+                LocalDateTime.now(), LocalDateTime.now()
         )).getProductId();
 
         // 포인트 세팅
