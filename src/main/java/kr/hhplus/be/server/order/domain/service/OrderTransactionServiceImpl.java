@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.order.domain.service;
 
 
+import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
-import kr.hhplus.be.server.common.DomainEventPublisher;
+import kr.hhplus.be.server.common.event.DomainEventPublisher;
 import kr.hhplus.be.server.order.component.OrderPlacedEvent;
 import kr.hhplus.be.server.order.domain.service.dto.Order;
 import kr.hhplus.be.server.order.domain.service.dto.OrderItem;
@@ -12,6 +13,7 @@ import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
+import kr.hhplus.be.server.product.domain.service.ProductCheckService;
 import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
         Long userId = command.userId();
         Long couponId = command.couponId();
         List<OrderItemCommand> items = command.items();
+
 
         // 1) 가격 계산 & 쿠폰 사용 확정(used 처리 + 할인률 반환)
         long totalPrice = OrderPriceCalculator.calculateTotalPrice(items);

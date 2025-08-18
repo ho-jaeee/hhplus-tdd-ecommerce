@@ -13,5 +13,6 @@ public interface CouponRepository{
 
     List<CouponJPA> findAll();
 
+    void deleteAll(); //테스트용
 
 }

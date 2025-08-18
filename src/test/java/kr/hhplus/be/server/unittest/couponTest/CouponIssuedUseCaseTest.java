@@ -40,8 +40,7 @@ class CouponIssuedUseCaseTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        // SUT 생성자 시그니처: (CouponIssuedService, RedissonClient)
-        useCase = new CouponIssuedUseCaseImpl(couponIssuedService, redisson);
+        useCase = new CouponIssuedUseCaseImpl(couponIssuedService);
 
         // 레디슨 락 목 세팅
         given(redisson.getLock(anyString())).willReturn(lock);

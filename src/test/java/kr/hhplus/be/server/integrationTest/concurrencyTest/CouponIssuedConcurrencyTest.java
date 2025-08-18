@@ -6,7 +6,6 @@ import kr.hhplus.be.server.config.RedissonTestConfig;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
-import kr.hhplus.be.server.coupon.domain.service.CouponIssuedService;
 import kr.hhplus.be.server.coupon.usecase.CouponIssueCommand;
 import kr.hhplus.be.server.coupon.usecase.CouponIssuedUseCase;
 import org.junit.jupiter.api.BeforeEach;

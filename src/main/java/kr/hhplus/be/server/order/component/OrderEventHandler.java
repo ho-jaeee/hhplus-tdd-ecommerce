@@ -3,6 +3,7 @@ package kr.hhplus.be.server.order.component;
 import kr.hhplus.be.server.order.domain.service.OrderHistoryService;
 import kr.hhplus.be.server.product.domain.model.ProductHistoryJPA;
 import kr.hhplus.be.server.product.domain.service.ProductHistoryService;
+import kr.hhplus.be.server.product.domain.service.ProductPopularInsertAndUpdateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ public class OrderEventHandler {
 
     private final OrderHistoryService orderHistoryService;
     private final ProductHistoryService productHistoryService;
+    private final ProductPopularInsertAndUpdateService productPopularInsertAndUpdateService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onOrderPlaced(OrderPlacedEvent e) {
@@ -33,6 +35,15 @@ public class OrderEventHandler {
                         item.quantity(),
                         item.productName(),
                         item.pricePerUnit()
+                )
+        );
+
+        // 3) 상품 판매량 집계이력
+        e.getItems().forEach(item ->
+                productPopularInsertAndUpdateService.addSale(
+                        item.productId(),
+                        item.quantity(),
+                        e.getCreatedAt()
                 )
         );
     }

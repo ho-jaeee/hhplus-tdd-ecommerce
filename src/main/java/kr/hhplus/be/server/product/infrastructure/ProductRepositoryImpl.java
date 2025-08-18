@@ -36,6 +36,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public String findProductNameById(long id) {
+        return jpaRepository.findProductNameById(id);
+    }
+
+    @Override
     public void flush() {
         jpaRepository.flush();
     }

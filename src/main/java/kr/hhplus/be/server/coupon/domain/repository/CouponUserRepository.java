@@ -15,4 +15,6 @@ public interface CouponUserRepository{
     CouponUserJPA save(CouponUserJPA couponUserJPA);
 
     long count();
+
+    void deleteAll(); // 테스트용
 }

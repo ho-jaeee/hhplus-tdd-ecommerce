@@ -11,6 +11,7 @@ public interface ProductRepository {
     Optional<ProductJPA> findById(long id);
     ProductJPA save(ProductJPA product);
     List<ProductJPA> findAll();
+    String findProductNameById(long id);
     void flush();
     void deleteAll(); //테스트용
 

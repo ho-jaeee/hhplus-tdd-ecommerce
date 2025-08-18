@@ -20,6 +20,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -112,7 +113,12 @@ public class OrderUseCaseMultiLockTest {
     @AfterEach
     void tearDown() {
         productRepository.deleteAll();
-    userPointRepository.deleteAll();}
+        userPointRepository.deleteAll();
+        couponRepository.deleteAll();
+        couponUserRepository.deleteAll();
+
+    }
+
 
     @Test
     @DisplayName("동시 20요청 -> 10 성공 / 10 재고부족 (락 타임아웃 0)")
@@ -145,6 +151,7 @@ public class OrderUseCaseMultiLockTest {
                 } catch (Exception e) {
                     String msg = String.valueOf(e.getMessage());
                     System.out.println("[FAIL] " + e.getClass().getSimpleName() + " : " + msg);
+                    System.out.println("isAopProxy=" + AopUtils.isAopProxy(orderUseCase));
                     if (msg.contains("잠시 후 다시 시도"))        lockTimeout.incrementAndGet(); // tryLock 대기만료
                     else if (msg.contains("재고") || msg.contains("out of stock")) outOfStock.incrementAndGet();
                     else                                         other.incrementAndGet();

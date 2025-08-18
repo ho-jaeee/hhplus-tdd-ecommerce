@@ -31,6 +31,10 @@ public class CouponRepositoryImpl implements CouponRepository {
         return jpaRepository.findAll();
     }
 
+    @Override
+    public void deleteAll() {
+        jpaRepository.deleteAll();
+    }
 
 
 }
