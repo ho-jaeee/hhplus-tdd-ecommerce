@@ -21,7 +21,6 @@ public class CouponIssuedUseCaseImpl implements CouponIssuedUseCase {
             leaseMs = 0,           // 워치독 사용(권장)
             throwOnTimeout = true
     )
-
     @Override
     public CouponIssueResult issueCoupon(CouponIssueCommand command) {
         Long couponId = command.couponId();

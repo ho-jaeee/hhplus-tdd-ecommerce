@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class ProductPopularInsertAndUpdateInsertAndUpdateServiceImpl implements ProductPopularInsertAndUpdateService {
+public class ProductPopularInsertAndUpdateServiceImpl implements ProductPopularInsertAndUpdateService {
 
     private final ProductPopularRepository popularRepository;
 
