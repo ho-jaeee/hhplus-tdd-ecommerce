@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SpringDataProductRepository extends JpaRepository<ProductJPA, Long> {
 
-    String findProductNameById(long id);
+    String findNameByProductId(long productId);
 }

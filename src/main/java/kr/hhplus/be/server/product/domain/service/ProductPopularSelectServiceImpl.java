@@ -46,8 +46,6 @@ public class ProductPopularSelectServiceImpl implements ProductPopularSelectServ
             }
         }
 
-
-
         // Redis ZSET에서 TOP-N 읽고 DTO 매핑 (productName 필요 시 채워 넣으세요)
         List<ScoredEntry<Long>> entries = new ArrayList<>(z.entryRangeReversed(0, n - 1));
         return entries.stream()

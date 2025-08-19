@@ -37,7 +37,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public String findProductNameById(long id) {
-        return jpaRepository.findProductNameById(id);
+        return jpaRepository.findNameByProductId(id);
     }
 
     @Override

@@ -36,9 +36,12 @@ redisson:
       - "redis://host.docker.internal:7015"
       - "redis://host.docker.internal:7016"
       scanInterval: 2000
-    lockWatchdogTimeout: 30000
     threads: 16
     nettyThreads: 32
+    checkLockSyncedSlaves: false
+    lockWatchdogTimeout: 30000
+    slavesSyncTimeout: 8000
+  
 
 logging:
   level:
@@ -46,6 +49,8 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.springframework.transaction.interceptor: trace
     org.redisson: debug
+    org.springframework.data.repository: debug
+    org.springframework.data.jpa: debug
     io.netty: info
 
 ---

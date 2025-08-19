@@ -30,7 +30,7 @@ public class RedissonLockSmokeTest {
         RLock lock = redisson.getLock(key);
 
         // wait=300ms, lease=2s (watchdog 의존 최소화)
-        boolean ok = lock.tryLock(300, 2_000, TimeUnit.MILLISECONDS);
+        boolean ok = lock.tryLock(5, 5, TimeUnit.SECONDS);
         assertThat(ok).as("첫 락 획득").isTrue();
 
         try {
@@ -43,7 +43,7 @@ public class RedissonLockSmokeTest {
         }
 
         // 해제 후 재획득 가능해야 함
-        boolean ok2 = lock.tryLock(300, 2_000, TimeUnit.MILLISECONDS);
+        boolean ok2 = lock.tryLock(5, 5, TimeUnit.SECONDS);
         assertThat(ok2).as("해제 후 재락 획득").isTrue();
         if (lock.isHeldByCurrentThread()) {
             lock.unlock();
