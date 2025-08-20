@@ -17,5 +17,7 @@ public interface ProductPopularRepository {
     List<PopularAggRow> findAllTimeTop(int limit);
 
     List<PopularAggRow> findTopByWindow(LocalDateTime from, int limit);
+
+    void deleteAll(); //테스트용
 }
 

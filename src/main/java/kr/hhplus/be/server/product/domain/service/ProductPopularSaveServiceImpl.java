@@ -4,16 +4,18 @@ import kr.hhplus.be.server.product.domain.model.ProductPopularJPA;
 import kr.hhplus.be.server.product.domain.repository.ProductPopularRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class ProductPopularInsertAndUpdateServiceImpl implements ProductPopularInsertAndUpdateService {
+public class ProductPopularSaveServiceImpl implements ProductPopularSaveService {
 
     private final ProductPopularRepository popularRepository;
 
     @Override
+    @Transactional
     public void addSale(long productId, long quantity, LocalDateTime bucketStart) {
 
         LocalDateTime bucket = bucketStart.withMinute(0).withSecond(0).withNano(0);

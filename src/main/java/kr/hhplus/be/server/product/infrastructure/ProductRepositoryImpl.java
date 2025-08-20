@@ -43,7 +43,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
 
         // 1) 인터페이스 프로젝션으로 (id, name) 리스트 조회
-        List<ProductIdName> rows = jpaRepository.findByIdIn(productIds);
+        List<ProductIdName> rows = jpaRepository.findByProductIdIn(productIds);
 
         // 2) id -> name 기본 맵 (중복 id는 마지막 값이 우선)
         Map<Long, String> idNameMap = rows.stream()

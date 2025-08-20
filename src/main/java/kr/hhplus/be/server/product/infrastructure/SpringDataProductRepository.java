@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface SpringDataProductRepository extends JpaRepository<ProductJPA, Long> {
 
-    List<ProductIdName> findByIdIn(List<Long> ids);
+    List<ProductIdName> findByProductIdIn(List<Long> ids);
 
 }

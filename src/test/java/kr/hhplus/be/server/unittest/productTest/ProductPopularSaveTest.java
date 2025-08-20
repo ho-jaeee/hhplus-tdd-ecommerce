@@ -3,7 +3,7 @@ package kr.hhplus.be.server.unittest.productTest;
 
 import kr.hhplus.be.server.product.domain.model.ProductPopularJPA;
 import kr.hhplus.be.server.product.domain.repository.ProductPopularRepository;
-import kr.hhplus.be.server.product.domain.service.ProductPopularInsertAndUpdateServiceImpl;
+import kr.hhplus.be.server.product.domain.service.ProductPopularSaveServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +22,13 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class ProductPopularInsertAndUpdateTest {
+public class ProductPopularSaveTest {
 
     @Mock
     ProductPopularRepository popularRepository;
 
     @InjectMocks
-    ProductPopularInsertAndUpdateServiceImpl service;
+    ProductPopularSaveServiceImpl service;
 
     @Test
     @DisplayName("productId + buckerStart 값이 없음 신규생성 Insert")

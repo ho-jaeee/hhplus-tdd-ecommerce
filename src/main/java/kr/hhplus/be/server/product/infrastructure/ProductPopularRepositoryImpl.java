@@ -42,4 +42,9 @@ public class ProductPopularRepositoryImpl implements ProductPopularRepository {
         int n = Math.max(1, limit);
         return jpaRepository.findTopByWindow(from, PageRequest.of(0, n));
     }
+
+    @Override
+    public void deleteAll() {
+        jpaRepository.deleteAll();
+    }
 }
