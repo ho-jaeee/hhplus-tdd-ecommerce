@@ -25,31 +25,36 @@ spring:
       format_sql: true
       use_sql_comments: true
 
-#redisson:
-#  config: |
-#    clusterServersConfig:
-#      nodeAddresses:
-#      - "redis://host.docker.internal:7011"
-#      - "redis://host.docker.internal:7012"
-#      - "redis://host.docker.internal:7013"
-#      - "redis://host.docker.internal:7014"
-#      - "redis://host.docker.internal:7015"
-#      - "redis://host.docker.internal:7016"
-#      scanInterval: 2000
-#    threads: 16
-#    nettyThreads: 32
-#    lockWatchdogTimeout: 30000
-#    slavesSyncTimeout: 8000
-
-
 redisson:
   config: |
-    singleServerConfig:
-      address: "redis://localhost:6379"
-      connectionMinimumIdleSize: 8
-      connectionPoolSize: 32
-    threads: 8
-    nettyThreads: 8
+    clusterServersConfig:
+      nodeAddresses:
+      - "redis://host.docker.internal:7011"
+      - "redis://host.docker.internal:7012"
+      - "redis://host.docker.internal:7013"
+      - "redis://host.docker.internal:7014"
+      - "redis://host.docker.internal:7015"
+      - "redis://host.docker.internal:7016"
+      scanInterval: 2000
+    threads: 16
+    nettyThreads: 32
+    lockWatchdogTimeout: 30000
+    slavesSyncTimeout: 8000
+
+popular:
+  outbox:
+    sync:
+      fixedDelayMillis: 5000  # 스케줄러 주기 (ms)
+
+
+#redisson:
+#  config: |
+#    singleServerConfig:
+#      address: "redis://localhost:6379"
+#      connectionMinimumIdleSize: 8
+#      connectionPoolSize: 32
+#    threads: 8
+#    nettyThreads: 8
   
 
 logging:

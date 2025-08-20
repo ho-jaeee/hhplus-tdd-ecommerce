@@ -15,6 +15,9 @@ import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
 import kr.hhplus.be.server.product.domain.service.ProductCheckService;
 import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
+import kr.hhplus.be.server.product.domain.service.ProductPopularOutboxSaveService;
+import kr.hhplus.be.server.product.domain.service.ProductPopularOutboxSaveServiceImpl;
+import kr.hhplus.be.server.product.domain.service.dto.ProductPopularOutboxDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +30,13 @@ import java.util.List;
 public class OrderTransactionServiceImpl implements OrderTransactionService {
 
 
-    private final CouponDiscountService couponDiscountService; // 비관적 락
-    private final PointUseService pointUseService; // 비관적 락
+    private final CouponDiscountService couponDiscountService;
+    private final PointUseService pointUseService;
     private final OrderSaveService orderSaveService;
     private final OrderItemSaveService orderItemSaveService;
-    private final ProductDecreaseService productDecreaseService;// 낙관적 락
+    private final ProductDecreaseService productDecreaseService;
     private final DomainEventPublisher eventPublisher;
+    private final ProductPopularOutboxSaveService productPopularOutboxSaveService;
 
 
 
@@ -69,10 +73,20 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
                         .toList());
 
 
-        // 5) 도메인 이벤트 발행 (AFTER_COMMIT 핸들러가 후처리)
+        // 5) Outbox 적재
+        productPopularOutboxSaveService.writeForOrder(
+                savedOrder.getCreatedAt(),
+                items.stream()
+                        .map(i -> new ProductPopularOutboxDto(i.productId(), i.quantity()))
+                        .toList()
+        );
+
+
+
+        // 6) 도메인 이벤트 발행 (AFTER_COMMIT 핸들러가 후처리)
         eventPublisher.publish(OrderPlacedEvent.of(items, savedOrder, payPoint));
 
-        // 6) 결과
+        // 7) 결과
         return OrderResult.of(savedOrder, items);
 
 

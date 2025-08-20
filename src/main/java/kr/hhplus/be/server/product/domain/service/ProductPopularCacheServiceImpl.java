@@ -6,11 +6,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -54,5 +50,55 @@ public class ProductPopularCacheServiceImpl implements ProductPopularCacheServic
             });
         }
 
+    @Override
+    public List<ProductPopularDto> getDailyTopN(LocalDate kstDate, int n) {
+        String key = "rank:product:sales:daily:" + DAILY_FMT.format(kstDate);
+        var tuples = redis.opsForZSet().reverseRangeWithScores(key, 0, Math.max(0, n - 1));
+        if (tuples == null || tuples.isEmpty()) return List.of();
+
+        return tuples.stream()
+                .map(t -> {
+                    String pid = t.getValue();
+                    Double score = t.getScore();
+                    Object name = redis.opsForHash().get("product:meta", pid);
+                    return new ProductPopularDto(Long.valueOf(pid), name == null ? null : name.toString(),
+                            (long) (score == null ? 0.0 : score));
+                })
+                .toList();
     }
+
+    @Override
+    public List<ProductPopularDto> getLast7DaysTopN(LocalDate kstEndDateInclusive, int n) {
+        // 최근 7일(끝 날짜 포함) 키 수집
+        String[] dayKeys = new String[7];
+        for (int i = 0; i < 7; i++) {
+            LocalDate d = kstEndDateInclusive.minusDays(i);
+            dayKeys[i] = "rank:product:sales:daily:" + DAILY_FMT.format(d);
+        }
+
+        // 임시 키에 합산
+        String destKey = "rank:product:sales:7d:" + DAILY_FMT.format(kstEndDateInclusive);
+        // 첫 번째 키를 기준으로 합산
+        String first = dayKeys[0];
+        List<String> rest = java.util.Arrays.stream(dayKeys).skip(1).toList();
+        redis.opsForZSet().unionAndStore(first, rest, destKey);
+        // 임시 키는 짧게 만료
+        redis.expire(destKey, Duration.ofMinutes(5));
+
+        var tuples = redis.opsForZSet().reverseRangeWithScores(destKey, 0, Math.max(0, n - 1));
+        if (tuples == null || tuples.isEmpty()) return List.of();
+
+        return tuples.stream()
+                .map(t -> {
+                    String pid = t.getValue();
+                    Double score = t.getScore();
+                    Object name = redis.opsForHash().get("product:meta", pid);
+                    return new ProductPopularDto(Long.valueOf(pid), name == null ? null : name.toString(),
+                            (long) (score == null ? 0.0 : score));
+                })
+                .toList();
+    }
+
+}
+
 

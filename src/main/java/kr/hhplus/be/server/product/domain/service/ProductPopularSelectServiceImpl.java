@@ -4,10 +4,7 @@ import kr.hhplus.be.server.product.domain.repository.ProductPopularRepository;
 import kr.hhplus.be.server.product.domain.repository.ProductRepository;
 import kr.hhplus.be.server.product.domain.service.dto.ProductPopularDto;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RKeys;
-import org.redisson.api.RMap;
-import org.redisson.api.RScoredSortedSet;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.redisson.client.protocol.ScoredEntry;
 import org.springframework.stereotype.Service;
 
@@ -87,8 +84,14 @@ public class ProductPopularSelectServiceImpl implements ProductPopularSelectServ
                     }
                 }
                 if (!toCache.isEmpty()) {
-                    nameHash.putAll(toCache);
-                    // 필요시 nameHash.expire(…); 로 TTL 부여 가능 (Redisson 의 MapCache 를 쓰는 방법도 있음)
+                    RMapCache<String, String> nameHashCache = redisson.getMapCache(NAME_HASH_KEY);
+                    if (nameHashCache != null) {
+                        toCache.forEach((k, v) -> nameHashCache.fastPut(k, v, 1, TimeUnit.DAYS));
+                    } else {
+                        // 최후 폴백: TTL 없이라도 저장하거나, 전체 키 TTL 부여
+                        nameHash.putAll(toCache);
+                        redisson.getKeys().expire(NAME_HASH_KEY, 1, TimeUnit.DAYS);
+                    }
                 }
             }
         }
