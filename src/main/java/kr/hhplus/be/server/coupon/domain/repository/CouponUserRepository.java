@@ -10,6 +10,12 @@ public interface CouponUserRepository{
 
     Optional<CouponUserJPA> findByUserIdAndCouponId(Long userId, Long couponId);
 
+    Optional<CouponUserJPA> findByCouponIdAndReqId(Long couponId, String reqId);
+
+    Optional<CouponUserJPA> findByReqId(String reqId);
+
+    long countByReqId(String reqId);
+
     List<CouponUserJPA> findAll();
 
     CouponUserJPA save(CouponUserJPA couponUserJPA);

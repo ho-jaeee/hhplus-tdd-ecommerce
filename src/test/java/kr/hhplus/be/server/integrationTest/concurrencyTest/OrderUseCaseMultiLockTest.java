@@ -85,6 +85,7 @@ public class OrderUseCaseMultiLockTest {
                     null,
                     1000L + i,
                     c.getCouponId(),
+                    null,
                     false,
                     LocalDateTime.now(),
                     LocalDateTime.now()

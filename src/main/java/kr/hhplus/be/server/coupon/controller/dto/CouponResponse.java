@@ -3,14 +3,8 @@ package kr.hhplus.be.server.coupon.controller.dto;
 public record CouponResponse (
         Long userId,
         Long couponId,
-        String message
+        boolean success,
+        String message,
+        Long rank    // 대기열 순번(옵션, 없으면 null)
 
-){
-    public static CouponResponse success(Long userId, Long couponId) {
-        return new CouponResponse(userId, couponId, "쿠폰 발급 성공");
-    }
-
-    public static CouponResponse fail(Long userId, Long couponId, String reason) {
-        return new CouponResponse(userId, couponId, reason);
-    }
-}
+){}

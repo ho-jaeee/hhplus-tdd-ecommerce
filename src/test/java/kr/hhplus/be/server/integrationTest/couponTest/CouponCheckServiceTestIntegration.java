@@ -61,7 +61,7 @@ public class CouponCheckServiceTestIntegration {
      void checkCoupon_valid() {
         // given
         couponUserRepository.save(new CouponUserJPA(
-                null, userId, couponId, false,
+                null, userId, couponId, null,false,
                 null, LocalDateTime.now()
         ));
 
@@ -115,7 +115,7 @@ public class CouponCheckServiceTestIntegration {
     void checkCoupon_alreadyUsed() {
         // given
         couponUserRepository.save(new CouponUserJPA(
-                null, userId, couponId, true,
+                null, userId, couponId, null,true,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().minusDays(2)
         ));

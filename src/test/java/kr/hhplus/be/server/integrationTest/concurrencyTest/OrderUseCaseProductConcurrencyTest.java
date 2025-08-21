@@ -69,8 +69,8 @@ public class OrderUseCaseProductConcurrencyTest {
                 LocalDateTime.now(), LocalDateTime.now()
         )).getCouponId();
 
-        couponUserRepository.save(new CouponUserJPA(null, couponId, userId1, false, null, LocalDateTime.now()));
-        couponUserRepository.save(new CouponUserJPA(null, couponId, userId2, false, null, LocalDateTime.now()));
+        couponUserRepository.save(new CouponUserJPA(null, couponId, userId1, null,false, null, LocalDateTime.now()));
+        couponUserRepository.save(new CouponUserJPA(null, couponId, userId2, null, false, null, LocalDateTime.now()));
     }
 
     @Test

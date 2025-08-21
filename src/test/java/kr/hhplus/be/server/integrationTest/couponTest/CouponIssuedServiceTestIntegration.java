@@ -59,7 +59,7 @@ public class CouponIssuedServiceTestIntegration {
     void couponIssuedIntegration() {
 
         // when
-        CouponUser issued = couponIssuedService.issueCouponToUser(couponId, userId);
+        CouponUser issued = couponIssuedService.issueCouponToUser(couponId, userId, null);
 
         // then
         assertThat(issued).isNotNull();

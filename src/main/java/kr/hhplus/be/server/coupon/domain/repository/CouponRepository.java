@@ -15,4 +15,6 @@ public interface CouponRepository{
 
     void deleteAll(); //테스트용
 
+    int incrementIssuedQuantity(Long couponId);
+
 }

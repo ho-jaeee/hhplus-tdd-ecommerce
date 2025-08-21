@@ -87,7 +87,7 @@ public class OrderUseCaseTestIntegration {
         )).getCouponId();
 
         couponUserRepository.save(new CouponUserJPA(
-                null, couponId, userId, false, null, LocalDateTime.now()
+                null, couponId, userId, null, false, null, LocalDateTime.now()
         ));
     }
 

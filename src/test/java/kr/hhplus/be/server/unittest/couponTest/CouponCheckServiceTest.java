@@ -56,7 +56,7 @@ public class CouponCheckServiceTest {
         );
 
         CouponUser couponUser = new CouponUser(
-                 userId, couponId, false, null, LocalDateTime.now()
+                 userId, couponId, null, false, null, LocalDateTime.now()
         );
 
         given(couponRepository.findById(couponId)).willReturn(Optional.of(coupon.toEntity()));
@@ -128,7 +128,7 @@ public class CouponCheckServiceTest {
                 LocalDateTime.now(), LocalDateTime.now()
         );
         CouponUser usedCoupon = new CouponUser(
-                userId, couponId, true,
+                userId, couponId, null, true,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now().minusDays(2)
         );

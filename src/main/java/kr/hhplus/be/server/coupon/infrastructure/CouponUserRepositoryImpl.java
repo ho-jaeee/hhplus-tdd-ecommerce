@@ -23,6 +23,21 @@ public class CouponUserRepositoryImpl implements CouponUserRepository {
     }
 
     @Override
+    public Optional<CouponUserJPA> findByCouponIdAndReqId(Long couponId, String reqId) {
+        return jpaRepository.findByCouponIdAndReqId(couponId, reqId);
+    }
+
+    @Override
+    public Optional<CouponUserJPA> findByReqId(String reqId) {
+        return jpaRepository.findByReqId(reqId);
+    }
+
+    @Override
+    public long countByReqId(String reqId) {
+        return jpaRepository.countByReqId(reqId);
+    }
+
+    @Override
     public List<CouponUserJPA> findAll() {
         return jpaRepository.findAll();
     }

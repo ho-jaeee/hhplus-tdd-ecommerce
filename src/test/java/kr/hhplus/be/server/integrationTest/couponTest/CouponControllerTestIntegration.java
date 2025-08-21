@@ -60,7 +60,7 @@ public class CouponControllerTestIntegration {
     @DisplayName("쿠폰 발급 API가 정상적으로 작동한다")
     void issueCoupon_success() throws Exception {
         // given
-        CouponRequest request = new CouponRequest(userId, couponId);
+        CouponRequest request = new CouponRequest(userId, couponId, null);
         String json = objectMapper.writeValueAsString(request);
 
         // when & then

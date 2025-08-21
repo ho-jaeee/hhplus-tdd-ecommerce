@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-
 public class CouponJPA {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,14 +61,7 @@ public class CouponJPA {
                 .build();
     }
 
-    // 비즈니스 행위
-    public void setIssuedQuantity(int value) {
-        this.issuedQuantity = value;
-    }
-
-    public void setUpdatedAt(LocalDateTime time) {
-        this.updatedAt = time;
-    }
+    public void increaseIssuedQuantity() { this.issuedQuantity++; }
 
     @PrePersist
     public void prePersist() {
