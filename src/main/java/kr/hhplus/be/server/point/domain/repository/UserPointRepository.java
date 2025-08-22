@@ -1,7 +1,12 @@
 package kr.hhplus.be.server.point.domain.repository;
 
-import kr.hhplus.be.server.point.domain.model.UserPointJPA;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserPointRepository extends JpaRepository<UserPointJPA, Long> {
+import kr.hhplus.be.server.point.domain.model.UserPointJPA;
+
+public interface UserPointRepository {
+
+    UserPointJPA findById(Long id);
+    UserPointJPA save(UserPointJPA userPointJPA);
+    void deleteAll();// 테스트용
+
 }

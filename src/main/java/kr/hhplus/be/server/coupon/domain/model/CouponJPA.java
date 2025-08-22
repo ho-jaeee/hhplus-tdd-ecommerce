@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "coupon")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-
 public class CouponJPA {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +60,8 @@ public class CouponJPA {
                 .updatedAt(domain.getUpdatedAt())
                 .build();
     }
+
+    public void increaseIssuedQuantity() { this.issuedQuantity++; }
 
     @PrePersist
     public void prePersist() {

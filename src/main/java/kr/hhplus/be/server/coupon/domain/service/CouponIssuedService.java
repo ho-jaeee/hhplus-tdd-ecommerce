@@ -1,45 +1,94 @@
 package kr.hhplus.be.server.coupon.domain.service;
 
 
+
+import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
+import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
+import kr.hhplus.be.server.coupon.domain.repository.CouponRedisQueueRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.coupon.domain.service.dto.Coupon;
 import kr.hhplus.be.server.coupon.domain.service.dto.CouponUser;
-import kr.hhplus.be.server.coupon.policy.CouponValidator;
+import kr.hhplus.be.server.coupon.domain.service.dto.FinishResult;
+import kr.hhplus.be.server.coupon.domain.service.dto.HoldResult;
 
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
+
+@Slf4j
 @Service
-
 public class CouponIssuedService {
 
 
     private final CouponRepository couponRepo;
     private final CouponUserRepository couponUserRepo;
-    private final CouponValidator couponValidator;
+    private final CouponRedisQueueRepository couponRedisQueueRepo;
 
     public CouponIssuedService(CouponRepository couponRepository,
                                CouponUserRepository couponUserRepository,
-                               CouponValidator couponValidator) {
+                               CouponRedisQueueRepository couponRedisQueueRepo) {
         this.couponRepo = couponRepository;
         this.couponUserRepo = couponUserRepository;
-        this.couponValidator = couponValidator;
+        this.couponRedisQueueRepo = couponRedisQueueRepo;
     }
 
-    public CouponUser issueCouponToUser(Long couponId, Long userId) {
-        Coupon coupon = couponRepo.findByCouponId(couponId)
-                .map(Coupon::fromEntity) // CouponJPA -> Coupon
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰입니다."));
+    @Transactional
+    public CouponUser issueCouponToUser(Long couponId, Long userId, String reqId) {
 
-        Optional<CouponUser> existingCoupon = couponUserRepo.findByUserIdAndCouponId(userId, couponId)
-                .map(CouponUser::fromEntity);
-        couponValidator.validateIssue(coupon, existingCoupon);
+        // 0) 정책 검증 (기간/활성 등)
+        CouponJPA couponJPA = couponRepo.findById(couponId)
+                .orElseThrow(() -> new IllegalArgumentException("쿠폰이 존재하지 않습니다."));
+        Coupon coupon = couponJPA.toDomain();
 
-        CouponUser issued = new CouponUser(userId, couponId, false, null, null);
-        return CouponUser.fromEntity(
-                couponUserRepo.save(issued.toEntity())
-        );
+
+        long now = System.currentTimeMillis();
+        long limit = coupon.getTotalQuantity(); // 정책상 총량/잔여량 중 택1
+
+        // 1) HOLD (원자: 큐 진입 + 컷 판정 + 예약)
+        HoldResult hold = couponRedisQueueRepo.enqueueAndHold(couponId, userId, reqId, limit, now, 15_000);
+        if (!hold.hold()) {
+            if (hold.isAlreadyIssued()) throw new IllegalArgumentException("이미 발급된 사용자입니다.");
+            if (hold.isOutOfCut()) throw new IllegalArgumentException("선착순 마감되었습니다.");
+            throw new IllegalArgumentException("대기열 진입 실패: " + hold.error());
+        }
+
+        // 2) DB 확정 (최종 보증: UNIQUE (user_id,coupon_id) + (coupon_id,req_id))
+        CouponUserJPA saved;
+        try {
+            saved = couponUserRepo.save(
+                    CouponUserJPA.builder()
+                            .userId(userId)
+                            .couponId(couponId)
+                            .reqId(reqId)
+                            .isUsed(false)
+                            .build()
+            );
+            // (선택) 카운터 증가: 동시성 경쟁에 안전한 단일 UPDATE
+            couponRepo.incrementIssuedQuantity(couponId);
+
+        } catch (DataIntegrityViolationException dup) {
+            // 멱등/중복: 이미 발급됨으로 간주
+            saved = couponUserRepo.findByCouponIdAndReqId(couponId, reqId)
+                    .orElseGet(() -> couponUserRepo.findByUserIdAndCouponId(userId, couponId)
+                            .orElseThrow(() -> dup));
+        } catch (RuntimeException e) {
+            // DB 실패 → 예약 취소
+            couponRedisQueueRepo.finish(couponId, userId, reqId, false, System.currentTimeMillis());
+            throw e;
+        }
+
+        // 3) COMMIT (원자: issued 반영 + 큐/예약 정리)
+        FinishResult fin = couponRedisQueueRepo.finish(couponId, userId, reqId, true, System.currentTimeMillis());
+        if (!fin.ok() && !"RESERVATION_EXPIRED".equals(fin.error())) {
+            log.warn("commit anomaly couponId={}, userId={}, reqId={}, err={}",
+                    couponId, userId, reqId, fin.error());
+        }
+
+        return saved.toDomain();
     }
 }
