@@ -25,6 +25,24 @@ spring:
       format_sql: true
       use_sql_comments: true
 
+redisson:
+  config: |
+    singleServerConfig:
+      address: "${spring.data.redis.url}"  
+      connectionMinimumIdleSize: 8
+      connectionPoolSize: 32
+    threads: 8
+    nettyThreads: 8
+
+popular:
+  outbox:
+    sync:
+      fixedDelayMillis: 5000 # Outbox 동기화 주기
+
+  rank:
+    weekly:
+      fixedDelayMillis: 300000 # 7일 랭킹 캐시 주기 (5분 = 300000ms)
+
 #redisson:
 #  config: |
 #    clusterServersConfig:
@@ -41,21 +59,15 @@ spring:
 #    lockWatchdogTimeout: 30000
 #    slavesSyncTimeout: 8000
 
-popular:
-  outbox:
-    sync:
-      fixedDelayMillis: 5000  # 스케줄러 주기 (ms)
-
-
-redisson:
-  config: |
-    singleServerConfig:
-      address: "redis://localhost:6379"
-      connectionMinimumIdleSize: 8
-      connectionPoolSize: 32
-    threads: 8
-    nettyThreads: 8
-  
+#redisson:
+#  config: |
+#    singleServerConfig:
+#      address: "redis://localhost:6379"
+#      connectionMinimumIdleSize: 8
+#      connectionPoolSize: 32
+#    threads: 8
+#    nettyThreads: 8
+#
 
 logging:
   level:

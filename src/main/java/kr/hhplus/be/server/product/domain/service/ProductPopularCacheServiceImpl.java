@@ -2,14 +2,18 @@ package kr.hhplus.be.server.product.domain.service;
 
 import kr.hhplus.be.server.product.domain.service.dto.ProductPopularDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductPopularCacheServiceImpl implements ProductPopularCacheService {
@@ -69,34 +73,71 @@ public class ProductPopularCacheServiceImpl implements ProductPopularCacheServic
 
     @Override
     public List<ProductPopularDto> getLast7DaysTopN(LocalDate kstEndDateInclusive, int n) {
-        // 최근 7일(끝 날짜 포함) 키 수집
+        final String CACHE_KEY = "rank:product:sales:weekly:cache";
+        final int MAX_N = 100;
+        final int limit = Math.min(Math.max(n, 1), MAX_N);
+
+        try {
+            // 1) 캐시 조회
+            var tuplesSet = redis.opsForZSet().reverseRangeWithScores(CACHE_KEY, 0, limit - 1);
+
+            // 2) 캐시 없거나 비었으면 -> 새로 생성
+            if (tuplesSet == null || tuplesSet.isEmpty()) {
+                tuplesSet = rebuildWeeklyCache(kstEndDateInclusive, limit);
+                if (tuplesSet == null || tuplesSet.isEmpty()) return List.of();
+            }
+
+            // 순서 보존
+            var tuples = new java.util.ArrayList<>(tuplesSet);
+
+            // product:meta HMGET
+            var pids = tuples.stream().map(t -> t.getValue()).toList();
+            var names = redis.opsForHash().multiGet("product:meta", new java.util.ArrayList<>(pids));
+
+            // 매핑
+            var out = new java.util.ArrayList<ProductPopularDto>(tuples.size());
+            for (int i = 0; i < tuples.size(); i++) {
+                var t = tuples.get(i);
+                String pidStr = t.getValue();
+                Double score = t.getScore();
+
+                long pid;
+                try {
+                    pid = Long.parseLong(pidStr);
+                } catch (NumberFormatException e) {
+                    continue; // 숫자 아닌 멤버는 스킵
+                }
+
+                String name = (names != null && i < names.size() && names.get(i) != null)
+                        ? names.get(i).toString()
+                        : null;
+
+                long cnt = (score == null) ? 0L : Math.round(score);
+                out.add(new ProductPopularDto(pid, name, cnt));
+            }
+            return out;
+        } catch (Exception e) {
+            // Redis 연결 등 예외 시 안전하게 빈 리스트 반환
+            log.warn("getLast7DaysTopN failed: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
+    private Set<ZSetOperations.TypedTuple<String>> rebuildWeeklyCache(LocalDate endDate, int limit) {
         String[] dayKeys = new String[7];
         for (int i = 0; i < 7; i++) {
-            LocalDate d = kstEndDateInclusive.minusDays(i);
+            LocalDate d = endDate.minusDays(i);
             dayKeys[i] = "rank:product:sales:daily:" + DAILY_FMT.format(d);
         }
-
-        // 임시 키에 합산
-        String destKey = "rank:product:sales:7d:" + DAILY_FMT.format(kstEndDateInclusive);
-        // 첫 번째 키를 기준으로 합산
         String first = dayKeys[0];
         List<String> rest = java.util.Arrays.stream(dayKeys).skip(1).toList();
-        redis.opsForZSet().unionAndStore(first, rest, destKey);
-        // 임시 키는 짧게 만료
-        redis.expire(destKey, Duration.ofMinutes(5));
 
-        var tuples = redis.opsForZSet().reverseRangeWithScores(destKey, 0, Math.max(0, n - 1));
-        if (tuples == null || tuples.isEmpty()) return List.of();
+        // 합산해서 캐시에 저장
+        redis.opsForZSet().unionAndStore(first, rest, "rank:product:sales:weekly:cache");
+        redis.expire("rank:product:sales:weekly:cache", Duration.ofMinutes(10));
 
-        return tuples.stream()
-                .map(t -> {
-                    String pid = t.getValue();
-                    Double score = t.getScore();
-                    Object name = redis.opsForHash().get("product:meta", pid);
-                    return new ProductPopularDto(Long.valueOf(pid), name == null ? null : name.toString(),
-                            (long) (score == null ? 0.0 : score));
-                })
-                .toList();
+        // 다시 읽어서 반환
+        return redis.opsForZSet().reverseRangeWithScores("rank:product:sales:weekly:cache", 0, limit - 1);
     }
 
 }

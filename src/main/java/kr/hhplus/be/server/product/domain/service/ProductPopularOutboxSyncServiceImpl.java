@@ -17,11 +17,6 @@ public class ProductPopularOutboxSyncServiceImpl implements ProductPopularOutbox
     private final ProductPopularOutboxRepository outboxRepository;
     private final ProductPopularCacheService cacheService;
 
-    /**
-     * Outbox에서 PENDING 묶음을 가져와 캐시에 반영하고 상태를 DONE으로 전환한다.
-     * 실패 항목은 backoff 후 재시도하도록 재스케줄 한다.
-     * @return 처리된(성공) 레코드 수
-     */
 
     @Override
     @Transactional
