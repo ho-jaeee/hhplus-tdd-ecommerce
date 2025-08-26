@@ -73,7 +73,7 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
                         .toList());
 
 
-        // 5) Outbox 적재
+        // 5) 인기상품 Outbox 적재
         productPopularOutboxSaveService.writeForOrder(
                 savedOrder.getCreatedAt(),
                 items.stream()

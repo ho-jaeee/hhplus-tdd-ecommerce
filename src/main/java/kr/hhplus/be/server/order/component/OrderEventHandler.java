@@ -9,6 +9,8 @@ import kr.hhplus.be.server.product.domain.service.dto.ProductPopularDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -27,6 +29,7 @@ public class OrderEventHandler {
     private final ProductPopularCacheService productPopularCacheService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onOrderPlaced(OrderPlacedEvent e) {
         // 1) 주문 이력
         orderHistoryService.orderInsert(e.getOrder(), "결제완료");
