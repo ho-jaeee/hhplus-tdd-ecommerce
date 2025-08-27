@@ -86,6 +86,7 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
         // 6) 도메인 이벤트 발행 (AFTER_COMMIT 핸들러가 후처리)
         eventPublisher.publish(OrderPlacedEvent.of(items, savedOrder, payPoint));
 
+
         // 7) 결과
         return OrderResult.of(savedOrder, items);
 

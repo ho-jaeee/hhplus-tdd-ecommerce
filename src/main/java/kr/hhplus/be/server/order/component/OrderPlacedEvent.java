@@ -48,14 +48,5 @@ public class OrderPlacedEvent {
     public Long getOrderId() { return order.getOrderId(); }
     public Long getUserId()  { return order.getUserId();  }
 
-    /** 캐시 적재용 DTO 변환(수량=score) */
-    public List<ProductPopularDto> toPopularDtos() {
-        return items.stream()
-                .map(it -> new ProductPopularDto(
-                        it.productId(),
-                        it.productName(),     // null 가능하면 조회단에서 fallback
-                        it.quantity()         // score로 사용
-                ))
-                .collect(Collectors.toList());
-    }
+
 }
