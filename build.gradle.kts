@@ -34,6 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.retry:spring-retry")
 
 	//스웨거
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
@@ -50,11 +51,16 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+
+
 	//lombok
 	compileOnly("org.projectlombok:lombok:1.18.32")
 	annotationProcessor("org.projectlombok:lombok:1.18.32")
 	testCompileOnly("org.projectlombok:lombok:1.18.32")
 	testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
+
+    // Redisson
+    implementation("org.redisson:redisson-spring-boot-starter:3.37.0")
 
 }
 

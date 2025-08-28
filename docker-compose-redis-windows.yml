@@ -1,0 +1,57 @@
+# docker-compose.yml
+name: hhplus            # 프로젝트명 명시(네트워크/리소스 충돌 방지)
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-8
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: application
+      MYSQL_PASSWORD: application
+      MYSQL_DATABASE: hhplus
+      TZ: Asia/Seoul
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    networks:
+      - hhplus_net
+
+  redis:
+    image: redis:7.2
+    container_name: redis-single
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: myStrongPassword!   # 필요 시 변경
+    command: >
+      sh -c "exec redis-server
+             --appendonly yes
+             --requirepass $$REDIS_PASSWORD
+             --save 900 1
+             --save 300 10
+             --save 60 10000"
+    volumes:
+      - redis_data_single:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "myStrongPassword!", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    networks:
+      - hhplus_net
+
+volumes:
+  redis_data_single:
+
+networks:
+  hhplus_net:
+    driver: bridge

@@ -12,6 +12,7 @@ public class CouponUser {
     // Getter only
     private final Long userId;
     private final Long couponId;
+    private String reqId;
     private final boolean isUsed;
     private final LocalDateTime issuedAt;
     private final LocalDateTime usedAt;
@@ -21,6 +22,7 @@ public class CouponUser {
         return new CouponUser(
                 entity.getUserId(),
                 entity.getCouponId(),
+                entity.getReqId(),
                 entity.getIsUsed(),
                 entity.getIssuedAt(),
                 entity.getUsedAt()
@@ -32,18 +34,11 @@ public class CouponUser {
         return CouponUserJPA.builder()
                 .userId(this.userId)
                 .couponId(this.couponId)
+                .reqId(this.reqId)
                 .isUsed(this.isUsed)
                 .issuedAt(this.issuedAt)
                 .usedAt(this.usedAt)
                 .build();
-    }
-
-    public static CouponUser issue(Long userId, Long couponId) {
-        return new CouponUser(userId, couponId, false, LocalDateTime.now(), null);
-    }
-
-    public CouponUser markAsUsed() {
-        return new CouponUser(userId, couponId, true, issuedAt, LocalDateTime.now());
     }
 
 

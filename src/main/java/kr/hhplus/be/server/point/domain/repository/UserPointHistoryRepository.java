@@ -1,8 +1,12 @@
 package kr.hhplus.be.server.point.domain.repository;
 
 import kr.hhplus.be.server.point.domain.model.UserPointHistoryJPA;
-import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 
-public interface UserPointHistoryRepository extends JpaRepository<UserPointHistoryJPA, Long> {
+public interface UserPointHistoryRepository {
+
+    UserPointHistoryJPA save(UserPointHistoryJPA userPointHistoryJPA);
+     List<UserPointHistoryJPA> findAll();
 }

@@ -5,6 +5,7 @@ import kr.hhplus.be.server.order.domain.model.OrderItemJPA;
 import kr.hhplus.be.server.order.domain.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

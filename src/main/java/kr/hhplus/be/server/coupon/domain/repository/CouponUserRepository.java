@@ -1,14 +1,26 @@
 package kr.hhplus.be.server.coupon.domain.repository;
 
+
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CouponUserRepository extends JpaRepository<CouponUserJPA, Long> {
+public interface CouponUserRepository{
 
     Optional<CouponUserJPA> findByUserIdAndCouponId(Long userId, Long couponId);
 
+    Optional<CouponUserJPA> findByCouponIdAndReqId(Long couponId, String reqId);
+
+    Optional<CouponUserJPA> findByReqId(String reqId);
+
+    long countByReqId(String reqId);
+
     List<CouponUserJPA> findAll();
+
+    CouponUserJPA save(CouponUserJPA couponUserJPA);
+
+    long count();
+
+    void deleteAll(); // 테스트용
 }

@@ -41,7 +41,7 @@ public class PointChargeServiceTest {
         long existingPoint = 10000L;
         UserPointJPA existing = new UserPointJPA(userId, existingPoint,System.currentTimeMillis());
         // 고정된 ID 1L에 대해 항상 이 UserPoint를 줘야 할 때
-        Mockito.when(userPointRepository.findById(userId)).thenReturn(Optional.of(existing));
+        Mockito.when(userPointRepository.findById(userId)).thenReturn(existing);
 
         // 저장할 때마다 들어오는 객체가 다를 수 있음 → 그대로 리턴
         Mockito.when(userPointRepository.save(Mockito.any(UserPointJPA.class)))

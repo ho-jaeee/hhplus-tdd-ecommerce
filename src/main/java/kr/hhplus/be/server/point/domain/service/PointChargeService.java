@@ -27,8 +27,8 @@ public class PointChargeService {
         **계정이 없으면 새로운 계정을 만들고, 0포인트 반환함
         **포인트 충전
         */
-        UserPointJPA current = userPointRepo.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        UserPointJPA current = userPointRepo.findById(userId);
+
         current.charge(point);
 
         // 포인트 업데이트
