@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.order.domain.service;
 
 
-import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
+
 import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
 import kr.hhplus.be.server.common.event.DomainEventPublisher;
 import kr.hhplus.be.server.order.component.OrderPlacedEvent;
@@ -13,10 +13,10 @@ import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import kr.hhplus.be.server.point.domain.service.PointUseService;
-import kr.hhplus.be.server.product.domain.service.ProductCheckService;
+
 import kr.hhplus.be.server.product.domain.service.ProductDecreaseService;
 import kr.hhplus.be.server.product.domain.service.ProductPopularOutboxSaveService;
-import kr.hhplus.be.server.product.domain.service.ProductPopularOutboxSaveServiceImpl;
+
 import kr.hhplus.be.server.product.domain.service.dto.ProductPopularOutboxDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -80,7 +80,6 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
                         .map(i -> new ProductPopularOutboxDto(i.productId(), i.quantity()))
                         .toList()
         );
-
 
 
         // 6) 도메인 이벤트 발행 (AFTER_COMMIT 핸들러가 후처리)

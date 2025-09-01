@@ -51,8 +51,6 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-
-
 	//lombok
 	compileOnly("org.projectlombok:lombok:1.18.32")
 	annotationProcessor("org.projectlombok:lombok:1.18.32")
@@ -61,6 +59,12 @@ dependencies {
 
     // Redisson
     implementation("org.redisson:redisson-spring-boot-starter:3.37.0")
+
+    //Kafka
+    implementation("org.springframework.kafka:spring-kafka")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+
 
 }
 

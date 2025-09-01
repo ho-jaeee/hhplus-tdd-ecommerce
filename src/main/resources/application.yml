@@ -25,6 +25,26 @@ spring:
       format_sql: true
       use_sql_comments: true
 
+
+  kafka:
+    bootstrap-servers: localhost:9092   # (컨테이너 듀얼 구성 시, 컨테이너 내부에선 kafka:29092)
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 트랜잭션/정합성 향상 옵션(선택)
+      acks: all
+      retries: 5
+      properties:
+        enable.idempotence: true
+    consumer:
+      group-id: order-service-local
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: RECORD  # 필요 시 MANUAL로 바꿔 수동커밋
+
+
 redisson:
   config: |
     singleServerConfig:
