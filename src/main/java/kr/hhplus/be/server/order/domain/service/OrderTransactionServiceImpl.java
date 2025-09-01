@@ -63,6 +63,7 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
         // 4) 주문/아이템 저장
         Order savedOrder = orderSaveService.save(Order.create(
                 userId, couponId, totalPrice, payPoint, OrderStatus.PAID, now(), now()));
+
         orderItemSaveService.itemSave(savedOrder.getOrderId(),
                 items.stream().map(i -> OrderItem.create(
                         savedOrder.getOrderId(),

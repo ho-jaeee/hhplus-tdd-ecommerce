@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -32,6 +33,7 @@ public class KafkaSmokeTest {
     @Value("${spring.kafka.bootstrap-servers}")
     String bootstrapServers;
 
+
     KafkaTemplate<String, String> kafkaTemplate;
 
     @BeforeEach
@@ -41,7 +43,9 @@ public class KafkaSmokeTest {
         adminProps.put("bootstrap.servers", bootstrapServers);
         try (AdminClient admin = AdminClient.create(adminProps)) {
             var topics = admin.listTopics().names().get();
-            if (!topics.contains(TOPIC)) {
+            if (topics.contains(TOPIC)) {
+                admin.deleteTopics(List.of(TOPIC)).all().get();
+            }else{
                 admin.createTopics(List.of(new NewTopic(TOPIC, 1, (short) 1))).all().get();
             }
         }

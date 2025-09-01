@@ -1,7 +1,4 @@
-# docker-compose.yml
-name: hhplus            # 프로젝트명 명시(네트워크/리소스 충돌 방지)
-
-services:
+ services:
   mysql:
     image: mysql:8.0
     container_name: mysql-8

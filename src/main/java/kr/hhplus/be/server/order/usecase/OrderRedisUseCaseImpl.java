@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderUseCaseImpl implements OrderUseCase {
+public class OrderRedisUseCaseImpl implements OrderRedisUseCase {
 
 
     private final OrderTransactionServiceImpl orderTransactionService;

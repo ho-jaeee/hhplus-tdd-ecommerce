@@ -48,7 +48,7 @@ spring:
 redisson:
   config: |
     singleServerConfig:
-      address: "${spring.data.redis.url}"  
+      address: "${spring.data.redis.url:redis://localhost:6379}"
       connectionMinimumIdleSize: 8
       connectionPoolSize: 32
     threads: 8
@@ -87,17 +87,17 @@ popular:
 #      connectionPoolSize: 32
 #    threads: 8
 #    nettyThreads: 8
-#
 
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-    org.springframework.transaction.interceptor: trace
-    org.redisson: debug
-    org.springframework.data.repository: debug
-    org.springframework.data.jpa: debug
-    io.netty: info
+
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
+#    org.hibernate.type.descriptor.sql.BasicBinder: trace
+#    org.springframework.transaction.interceptor: trace
+#    org.redisson: debug
+#    org.springframework.data.repository: debug
+#    org.springframework.data.jpa: debug
+#    io.netty: info
 
 ---
 spring.config.activate.on-profile: local, test

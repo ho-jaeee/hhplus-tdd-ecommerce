@@ -6,6 +6,7 @@ import kr.hhplus.be.server.product.domain.service.dto.ProductPopularDto;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -47,6 +48,9 @@ public class OrderPlacedEvent {
 
     public Long getOrderId() { return order.getOrderId(); }
     public Long getUserId()  { return order.getUserId();  }
+    public Long getCouponId()       { return order.getCouponId(); }
+    public long getTotalPrice()     { return order.getTotalPrice(); }
+    public LocalDateTime getOrderCreatedAt() { return order.getCreatedAt(); }
 
 
 }

@@ -33,7 +33,7 @@ import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderUseCaseTest {
+public class OrderRedisUseCaseTest {
 
     @Mock ProductCheckService productCheckService;
     @Mock CouponCheckService couponCheckService;
@@ -47,7 +47,7 @@ public class OrderUseCaseTest {
     @Mock ProductHistoryService productHistoryService;
 
     @InjectMocks
-    OrderUseCaseImpl orderUseCaseImpl;
+    OrderRedisUseCaseImpl orderUseCaseImpl;
 
     @Test
     @DisplayName("정상 주문이 완료되면 PAID 상태를 반환한다.")

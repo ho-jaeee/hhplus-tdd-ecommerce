@@ -6,7 +6,7 @@ import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
-import kr.hhplus.be.server.order.usecase.OrderUseCase;
+import kr.hhplus.be.server.order.usecase.OrderRedisUseCase;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
@@ -34,10 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Import({TestcontainersConfiguration.class})
-public class OrderUseCasePointConcurrencyTest {
+public class OrderRedisUseCasePointConcurrencyTest {
 
     @Autowired
-    OrderUseCase orderUseCase;
+    OrderRedisUseCase orderRedisUseCase;
 
     @Autowired
     ProductRepository productRepository;
@@ -122,7 +122,7 @@ public class OrderUseCasePointConcurrencyTest {
         // when
         executorService.submit(() -> {
             try {
-                orderUseCase.createOrder(orderForProduct1);
+                orderRedisUseCase.createOrder(orderForProduct1);
                 results.add("success");
             } catch (Throwable e) {
                 results.add("fail");
@@ -135,7 +135,7 @@ public class OrderUseCasePointConcurrencyTest {
 
         executorService.submit(() -> {
             try {
-                orderUseCase.createOrder(orderForProduct2);
+                orderRedisUseCase.createOrder(orderForProduct2);
                 results.add("success");
             } catch (Throwable e) {
                 results.add("fail");

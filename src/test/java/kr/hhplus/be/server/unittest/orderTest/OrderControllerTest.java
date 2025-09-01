@@ -5,7 +5,7 @@ import kr.hhplus.be.server.order.controller.OrderController;
 import kr.hhplus.be.server.order.controller.dto.OrderItemRequest;
 import kr.hhplus.be.server.order.controller.dto.OrderRequest;
 
-import kr.hhplus.be.server.order.usecase.OrderUseCase;
+import kr.hhplus.be.server.order.usecase.OrderRedisUseCase;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemResult;
 import kr.hhplus.be.server.order.usecase.dto.OrderResult;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ public class OrderControllerTest {
         ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
         // given
-        OrderUseCase mockUseCase = Mockito.mock(OrderUseCase.class);
+        OrderRedisUseCase mockUseCase = Mockito.mock(OrderRedisUseCase.class);
 
         List<OrderItemRequest> items = List.of(
                 new OrderItemRequest(1001L, "티셔츠", 15000L, 2),

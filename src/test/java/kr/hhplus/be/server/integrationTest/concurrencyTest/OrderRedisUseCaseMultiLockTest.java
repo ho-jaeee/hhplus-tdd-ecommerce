@@ -2,20 +2,17 @@ package kr.hhplus.be.server.integrationTest.concurrencyTest;
 
 
 import kr.hhplus.be.server.TestcontainersConfiguration;
-import kr.hhplus.be.server.config.RedissonTestConfig;
 import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
 import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
 import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
 import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
-import kr.hhplus.be.server.order.usecase.OrderUseCase;
+import kr.hhplus.be.server.order.usecase.OrderRedisUseCase;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
 import kr.hhplus.be.server.point.domain.model.UserPointJPA;
 import kr.hhplus.be.server.point.domain.repository.UserPointRepository;
 import kr.hhplus.be.server.product.domain.model.ProductJPA;
 import kr.hhplus.be.server.product.domain.repository.ProductRepository;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,11 +34,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Import(TestcontainersConfiguration.class)
-public class OrderUseCaseMultiLockTest {
+//@Import(TestcontainersConfiguration.class)
+public class OrderRedisUseCaseMultiLockTest {
 
     @Autowired
-    OrderUseCase orderUseCase;
+    OrderRedisUseCase orderRedisUseCase;
     @Autowired
     ProductRepository productRepository;
     @Autowired
@@ -147,12 +144,12 @@ public class OrderUseCaseMultiLockTest {
                             couponId,
                             List.of(new OrderItemCommand(productId,productName, pricePerUnit, 1))
                     );
-                    orderUseCase.createOrder(cmd);
+                    orderRedisUseCase.createOrder(cmd);
                     success.incrementAndGet();
                 } catch (Exception e) {
                     String msg = String.valueOf(e.getMessage());
                     System.out.println("[FAIL] " + e.getClass().getSimpleName() + " : " + msg);
-                    System.out.println("isAopProxy=" + AopUtils.isAopProxy(orderUseCase));
+                    System.out.println("isAopProxy=" + AopUtils.isAopProxy(orderRedisUseCase));
                     if (msg.contains("잠시 후 다시 시도"))        lockTimeout.incrementAndGet(); // tryLock 대기만료
                     else if (msg.contains("재고") || msg.contains("out of stock")) outOfStock.incrementAndGet();
                     else                                         other.incrementAndGet();
