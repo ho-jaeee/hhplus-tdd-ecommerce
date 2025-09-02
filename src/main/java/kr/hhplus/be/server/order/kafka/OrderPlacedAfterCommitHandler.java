@@ -14,7 +14,7 @@ public class OrderPlacedAfterCommitHandler {
     private final OrderEventProducer producer;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void on(OrderPlacedEvent e) {
+    public void onKafka(OrderPlacedEvent e) {
         // OrderPlacedEvent -> OrderPlacedKafka 매핑
         OrderPlacedKafka payload = new OrderPlacedKafka(
                 e.getOrderId(),                 // savedOrder.getOrderId()

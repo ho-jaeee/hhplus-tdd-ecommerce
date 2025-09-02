@@ -3,9 +3,9 @@ package kr.hhplus.be.server.order.kafka;
 import kr.hhplus.be.server.order.kafka.dto.OrderPlacedKafka;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 

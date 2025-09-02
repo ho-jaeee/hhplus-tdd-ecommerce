@@ -69,7 +69,7 @@ public class CouponIssuedService {
                             .build()
             );
             // (선택) 카운터 증가: 동시성 경쟁에 안전한 단일 UPDATE
-            couponRepo.incrementIssuedQuantity(couponId);
+           couponRepo.incrementIssuedQuantity(couponId);
 
         } catch (DataIntegrityViolationException dup) {
             // 멱등/중복: 이미 발급됨으로 간주
