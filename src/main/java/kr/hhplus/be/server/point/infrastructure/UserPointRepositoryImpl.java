@@ -18,8 +18,11 @@ public class UserPointRepositoryImpl implements UserPointRepository {
 
     @Override
     public UserPointJPA findById(Long id) {
-        return (jpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다.: " + id)));
+        return jpaRepository.findById(id)
+                .orElseGet(() -> {
+                    UserPointJPA newUser = UserPointJPA.empty(id); // 팩토리 메서드
+                    return jpaRepository.save(newUser);
+                });
 
     }
 

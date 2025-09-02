@@ -49,6 +49,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.testcontainers:kafka:1.21.3")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	//lombok
@@ -62,7 +64,6 @@ dependencies {
 
     //Kafka
     implementation("org.springframework.kafka:spring-kafka")
-    testImplementation("org.springframework.kafka:spring-kafka-test")
     implementation("com.fasterxml.jackson.core:jackson-databind")
 
 
@@ -71,4 +72,11 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("user.timezone", "UTC")
+}
+
+tasks.test {
+    systemProperty(
+        "java.util.logging.config.file",
+        "$projectDir/src/test/resources/logging.properties"
+    )
 }

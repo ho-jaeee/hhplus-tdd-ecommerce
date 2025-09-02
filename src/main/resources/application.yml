@@ -63,6 +63,14 @@ popular:
     weekly:
       fixedDelayMillis: 300000 # 7일 랭킹 캐시 주기 (5분 = 300000ms)
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+    display-request-duration: true
+    try-it-out-enabled: true
+  api-docs:
+    path: /v3/api-docs
+
 #redisson:
 #  config: |
 #    clusterServersConfig:

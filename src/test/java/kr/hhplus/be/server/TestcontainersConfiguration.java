@@ -8,12 +8,17 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
+
+
+
 @Configuration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestcontainersConfiguration {
 
 	public static final MySQLContainer<?> MYSQL_CONTAINER;
     public static final GenericContainer<?> REDIS_CONTAINER;
+
+
 
 	static {
         //MySQL
@@ -46,6 +51,9 @@ public class TestcontainersConfiguration {
         // URL 형태가 필요한 경우(예: 일부 Redisson 설정 등)
         System.setProperty("spring.data.redis.url", "redis://" + redisHost + ":" + redisPort);
         System.setProperty("spring.redis.url", "redis://" + redisHost + ":" + redisPort);
+
+
+
 	}
 
 	@PreDestroy
@@ -56,5 +64,7 @@ public class TestcontainersConfiguration {
         if (REDIS_CONTAINER.isRunning()) {
             REDIS_CONTAINER.stop();
         }
+
+
 	}
 }
