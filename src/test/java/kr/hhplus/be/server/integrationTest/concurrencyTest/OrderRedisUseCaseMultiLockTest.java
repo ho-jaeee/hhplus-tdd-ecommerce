@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-//@Import(TestcontainersConfiguration.class)
+@Import(TestcontainersConfiguration.class)
 public class OrderRedisUseCaseMultiLockTest {
 
 

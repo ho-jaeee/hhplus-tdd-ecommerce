@@ -28,19 +28,26 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092   # (컨테이너 듀얼 구성 시, 컨테이너 내부에선 kafka:29092)
+
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      # 트랜잭션/정합성 향상 옵션(선택)
+      value-serializer:  org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
       retries: 5
       properties:
         enable.idempotence: true
+        spring.json.add.type.headers: false
+
     consumer:
-      group-id: order-service-local
+      group-id: dp.order.ingest
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"      # 테스트 환경이면 *로
+        spring.json.use.type.headers: false    # 타입헤더 안 쓸 때
+        spring.json.value.default.type: kr.hhplus.be.server.order.kafka.dto.OrderPlacedKafka
+
     listener:
       ack-mode: RECORD  # 필요 시 MANUAL로 바꿔 수동커밋
 
