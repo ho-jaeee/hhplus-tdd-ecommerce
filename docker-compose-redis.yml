@@ -1,0 +1,178 @@
+
+version: '3.8'
+
+services:
+  redis-7011:
+    image: redis:7.2
+    container_name: redis-7011
+    ports:
+      - "7011:7011"      # 필요하면 나머지도 노출 가능
+      - "17011:17011"    # (선택) 버스 포트는 노출 필요 없음
+    command: >
+      redis-server --port 7011
+                   --cluster-enabled yes
+                   --cluster-config-file nodes.conf
+                   --cluster-node-timeout 5000
+                   --appendonly yes
+                   --dir /data
+                   --cluster-announce-ip host.docker.internal
+                   --cluster-announce-port 7011
+                   --cluster-announce-bus-port 17011
+    volumes:
+      - ./data/7011:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "7011", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      redis-cluster:
+        ipv4_address: 172.28.0.11
+    restart: unless-stopped
+
+  redis-7012:
+    image: redis:7.2
+    ports:
+      - "7012:7012"
+      - "17012:17012"
+    container_name: redis-7012
+    command: >
+      redis-server --port 7012
+                   --cluster-enabled yes
+                   --cluster-config-file nodes.conf
+                   --cluster-node-timeout 5000
+                   --appendonly yes
+                   --dir /data
+                   --cluster-announce-ip host.docker.internal
+                   --cluster-announce-port 7012
+                   --cluster-announce-bus-port 17012
+    volumes:
+      - ./data/7012:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "7012", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      redis-cluster:
+        ipv4_address: 172.28.0.12
+    restart: unless-stopped
+
+  redis-7013:
+    image: redis:7.2
+    ports:
+      - "7013:7013"
+      - "17013:17013"
+    container_name: redis-7013
+    command: >
+      redis-server --port 7013
+                   --cluster-enabled yes
+                   --cluster-config-file nodes.conf
+                   --cluster-node-timeout 5000
+                   --appendonly yes
+                   --dir /data
+                   --cluster-announce-ip host.docker.internal
+                   --cluster-announce-port 7013
+                   --cluster-announce-bus-port 17013
+    volumes:
+      - ./data/7013:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "7013", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      redis-cluster:
+        ipv4_address: 172.28.0.13
+    restart: unless-stopped
+
+  redis-7014:
+    image: redis:7.2
+    ports:
+      - "7014:7014"
+      - "17014:17014"
+    container_name: redis-7014
+    command: >
+      redis-server --port 7014
+                   --cluster-enabled yes
+                   --cluster-config-file nodes.conf
+                   --cluster-node-timeout 5000
+                   --appendonly yes
+                   --dir /data
+                   --cluster-announce-ip host.docker.internal
+                   --cluster-announce-port 7014
+                   --cluster-announce-bus-port 17014
+    volumes:
+      - ./data/7014:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "7014", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      redis-cluster:
+        ipv4_address: 172.28.0.14
+    restart: unless-stopped
+
+  redis-7015:
+    image: redis:7.2
+    ports:
+      - "7015:7015"
+      - "17015:17015"
+    container_name: redis-7015
+    command: >
+      redis-server --port 7015
+                   --cluster-enabled yes
+                   --cluster-config-file nodes.conf
+                   --cluster-node-timeout 5000
+                   --appendonly yes
+                   --dir /data
+                   --cluster-announce-ip host.docker.internal
+                   --cluster-announce-port 7015
+                   --cluster-announce-bus-port 17015
+    volumes:
+      - ./data/7015:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "7015", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      redis-cluster:
+        ipv4_address: 172.28.0.15
+    restart: unless-stopped
+
+  redis-7016:
+    image: redis:7.2
+    ports:
+      - "7016:7016"
+      - "17016:17016"
+    container_name: redis-7016
+    command: >
+      redis-server --port 7016
+                   --cluster-enabled yes
+                   --cluster-config-file nodes.conf
+                   --cluster-node-timeout 5000
+                   --appendonly yes
+                   --dir /data
+                   --cluster-announce-ip host.docker.internal
+                   --cluster-announce-port 7016
+                   --cluster-announce-bus-port 17016
+    volumes:
+      - ./data/7016:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "7016", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      redis-cluster:
+        ipv4_address: 172.28.0.16
+    restart: unless-stopped
+
+networks:
+  redis-cluster:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24

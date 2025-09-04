@@ -2,16 +2,14 @@ package kr.hhplus.be.server.product.domain.model;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "product")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProductJPA {
@@ -30,11 +28,14 @@ public class ProductJPA {
 
     private LocalDateTime updatedAt;
 
-    public void decreaseQuantity(int amount) {
-//        if (this.quantity < amount) {
-//            throw new IllegalStateException("재고 부족");
-//        }
-        this.quantity -= amount;
+    public void decreaseQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("차감 수량은 1 이상이어야 합니다.");
+        }
+        if (this.quantity < quantity) {
+            throw new IllegalStateException("재고 부족: 요청=" + quantity + ", 보유=" + this.quantity);
+        }
+        this.quantity -= quantity;
         this.updatedAt = LocalDateTime.now();
     }
 

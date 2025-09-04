@@ -7,9 +7,11 @@ spring:
     name: HangHaePlusDataSource
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      maximum-pool-size: 3
-      connection-timeout: 10000
-      max-lifetime: 60000
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 600000   # 10m
+      max-lifetime: 1800000 # 30m (RDS 기본 커넥션 만료보다 짧게)
+      connection-timeout: 30000
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     open-in-view: false
@@ -21,11 +23,102 @@ spring:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
       format_sql: true
+      use_sql_comments: true
 
-      logging:
-        level:
-          org.hibernate.SQL: DEBUG
-          org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+  kafka:
+    bootstrap-servers: localhost:9092   # (컨테이너 듀얼 구성 시, 컨테이너 내부에선 kafka:29092)
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer:  org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 5
+      properties:
+        enable.idempotence: true
+        spring.json.add.type.headers: false
+
+
+    # === Consumer (공통) ===
+    consumer:
+      # 역직렬화/Json 관련은 전부 코드에서 처리 → 여기선 설정하지 않음
+      # key-deserializer/value-deserializer 설정 금지 (코드와 충돌 방지)
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      # 운영/테스트 공통으로 무난한 기본치 (원하면 조정)
+      # max-poll-records: 500
+      # max-poll-interval-ms: 300000
+      # fetch-min-bytes: 1
+      # fetch-max-wait-ms: 500
+
+    # === Listener (컨테이너 공통 기본) ===
+    listener:
+      # 글로벌 ack-mode는 지정하지 않음(개별 ContainerFactory에서 명시)
+      # ack-mode: RECORD
+      missing-topics-fatal: false  # 테스트 시 편의 (필요 시 true로)
+
+
+redisson:
+  config: |
+    singleServerConfig:
+      address: "${spring.data.redis.url:redis://localhost:6379}"
+      connectionMinimumIdleSize: 8
+      connectionPoolSize: 32
+    threads: 8
+    nettyThreads: 8
+
+popular:
+  outbox:
+    sync:
+      fixedDelayMillis: 5000 # Outbox 동기화 주기
+
+  rank:
+    weekly:
+      fixedDelayMillis: 300000 # 7일 랭킹 캐시 주기 (5분 = 300000ms)
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+    display-request-duration: true
+    try-it-out-enabled: true
+  api-docs:
+    path: /v3/api-docs
+
+#redisson:
+#  config: |
+#    clusterServersConfig:
+#      nodeAddresses:
+#      - "redis://host.docker.internal:7011"
+#      - "redis://host.docker.internal:7012"
+#      - "redis://host.docker.internal:7013"
+#      - "redis://host.docker.internal:7014"
+#      - "redis://host.docker.internal:7015"
+#      - "redis://host.docker.internal:7016"
+#      scanInterval: 2000
+#    threads: 16
+#    nettyThreads: 32
+#    lockWatchdogTimeout: 30000
+#    slavesSyncTimeout: 8000
+
+#redisson:
+#  config: |
+#    singleServerConfig:
+#      address: "redis://localhost:6379"
+#      connectionMinimumIdleSize: 8
+#      connectionPoolSize: 32
+#    threads: 8
+#    nettyThreads: 8
+
+
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
+#    org.hibernate.type.descriptor.sql.BasicBinder: trace
+#    org.springframework.transaction.interceptor: trace
+#    org.redisson: debug
+#    org.springframework.data.repository: debug
+#    org.springframework.data.jpa: debug
+#    io.netty: info
 
 ---
 spring.config.activate.on-profile: local, test
@@ -35,3 +128,4 @@ spring:
     url: jdbc:mysql://localhost:3306/hhplus?characterEncoding=UTF-8&serverTimezone=UTC
     username: application
     password: application
+
