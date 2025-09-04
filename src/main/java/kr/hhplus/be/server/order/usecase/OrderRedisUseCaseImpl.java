@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.order.usecase;
 
 import kr.hhplus.be.server.common.lock.DistributedLock;
-import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
+import kr.hhplus.be.server.couponRedis.domain.service.CouponCheckService;
 import kr.hhplus.be.server.order.domain.service.OrderTransactionServiceImpl;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;

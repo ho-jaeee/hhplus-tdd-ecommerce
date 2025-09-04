@@ -2,7 +2,7 @@ package kr.hhplus.be.server.order.domain.service;
 
 
 
-import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
+import kr.hhplus.be.server.couponRedis.domain.service.CouponDiscountService;
 import kr.hhplus.be.server.common.event.DomainEventPublisher;
 import kr.hhplus.be.server.order.component.OrderPlacedEvent;
 import kr.hhplus.be.server.order.domain.service.dto.Order;

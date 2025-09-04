@@ -22,8 +22,8 @@ public class OrderEventConsumer {
     @KafkaListener(
             id = "order-consumer",
             topics = "ecom.order.events",
-            groupId = "dp.order.ingest"
-
+            groupId = "dp.order.ingest",
+            containerFactory = "orderListenerContainerFactory"
     )
     public void onMessage(
             OrderPlacedKafka msg,
@@ -34,8 +34,8 @@ public class OrderEventConsumer {
         log.info("[consume] key={}, partition={}, offset={}, orderId={}, items={}",
                 key, partition, offset, msg.orderId(), msg.items().size());
 
+        // 예외는 던져 컨테이너 에러 핸들러로 위임 → 재시도/ DLQ 처리
         orderKafkaService.save(msg);
-
     }
 
 }

@@ -1,16 +1,16 @@
 package kr.hhplus.be.server.unittest.couponTest;
 
-import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
-import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
-import kr.hhplus.be.server.coupon.domain.repository.CouponRedisQueueRepository;
-import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
-import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
-import kr.hhplus.be.server.coupon.domain.service.CouponIssuedService;
+import kr.hhplus.be.server.couponRedis.domain.model.CouponJPA;
+import kr.hhplus.be.server.couponRedis.domain.model.CouponUserJPA;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponRedisQueueRepository;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponRepository;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponUserRepository;
+import kr.hhplus.be.server.couponRedis.domain.service.CouponIssuedService;
 
-import kr.hhplus.be.server.coupon.domain.service.dto.CouponUser;
+import kr.hhplus.be.server.couponRedis.domain.service.dto.CouponUser;
 
-import kr.hhplus.be.server.coupon.domain.service.dto.FinishResult;
-import kr.hhplus.be.server.coupon.domain.service.dto.HoldResult;
+import kr.hhplus.be.server.couponRedis.domain.service.dto.FinishResult;
+import kr.hhplus.be.server.couponRedis.domain.service.dto.HoldResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 

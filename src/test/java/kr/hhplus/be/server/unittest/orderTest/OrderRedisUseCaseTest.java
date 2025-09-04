@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.unittest.orderTest;
 
 
-import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
-import kr.hhplus.be.server.coupon.domain.service.CouponDiscountService;
+import kr.hhplus.be.server.couponRedis.domain.service.CouponCheckService;
+import kr.hhplus.be.server.couponRedis.domain.service.CouponDiscountService;
 import kr.hhplus.be.server.order.domain.service.dto.Order;
 import kr.hhplus.be.server.order.domain.service.dto.OrderStatus;
 import kr.hhplus.be.server.order.domain.service.OrderSaveService;

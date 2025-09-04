@@ -1,18 +1,16 @@
 package kr.hhplus.be.server.integrationTest.couponTest;
 
 
-import java.util.concurrent.*;
-
 import kr.hhplus.be.server.TestcontainersConfiguration;
 import kr.hhplus.be.server.config.RedissonTestConfig;
-import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
-import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
-import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
-import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
+import kr.hhplus.be.server.couponRedis.domain.model.CouponJPA;
+import kr.hhplus.be.server.couponRedis.domain.model.CouponUserJPA;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponRepository;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponUserRepository;
 
-import kr.hhplus.be.server.coupon.usecase.CouponIssuedUseCase;
-import kr.hhplus.be.server.coupon.usecase.dto.CouponIssueCommand;
-import kr.hhplus.be.server.coupon.usecase.dto.CouponIssueResult;
+import kr.hhplus.be.server.couponRedis.usecase.CouponIssuedUseCase;
+import kr.hhplus.be.server.couponRedis.usecase.dto.CouponIssueCommand;
+import kr.hhplus.be.server.couponRedis.usecase.dto.CouponIssueResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;

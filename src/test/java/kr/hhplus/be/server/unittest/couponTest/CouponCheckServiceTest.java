@@ -2,11 +2,11 @@ package kr.hhplus.be.server.unittest.couponTest;
 
 
 
-import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
-import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
-import kr.hhplus.be.server.coupon.domain.service.CouponCheckService;
-import kr.hhplus.be.server.coupon.domain.service.dto.Coupon;
-import kr.hhplus.be.server.coupon.domain.service.dto.CouponUser;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponRepository;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponUserRepository;
+import kr.hhplus.be.server.couponRedis.domain.service.CouponCheckService;
+import kr.hhplus.be.server.couponRedis.domain.service.dto.Coupon;
+import kr.hhplus.be.server.couponRedis.domain.service.dto.CouponUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

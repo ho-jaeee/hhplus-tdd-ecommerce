@@ -2,10 +2,10 @@ package kr.hhplus.be.server.integrationTest.concurrencyTest;
 
 
 import kr.hhplus.be.server.TestcontainersConfiguration;
-import kr.hhplus.be.server.coupon.domain.model.CouponJPA;
-import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
-import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
-import kr.hhplus.be.server.coupon.domain.repository.CouponUserRepository;
+import kr.hhplus.be.server.couponRedis.domain.model.CouponJPA;
+import kr.hhplus.be.server.couponRedis.domain.model.CouponUserJPA;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponRepository;
+import kr.hhplus.be.server.couponRedis.domain.repository.CouponUserRepository;
 import kr.hhplus.be.server.order.usecase.OrderRedisUseCase;
 import kr.hhplus.be.server.order.usecase.dto.OrderCommand;
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
