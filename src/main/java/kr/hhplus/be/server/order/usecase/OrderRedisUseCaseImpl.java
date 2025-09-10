@@ -29,8 +29,8 @@ public class OrderRedisUseCaseImpl implements OrderRedisUseCase {
     @Override
     @DistributedLock(
             resolver = OrderLockKeyResolver.class,
-            waitMs = 5000,
-            leaseMs = 0,
+            waitMs = 300,
+            leaseMs = 250,
             sortKeys = true,
             throwOnTimeout = true
     )
