@@ -1,7 +1,7 @@
 //실행 예제
 // k6 run `
 //    -e BASE_URL=http://localhost:8080 `
-//    -e USERS=1000 `
+//    -e USERS=500 `
 //    -e PRODUCT_MAX_ID=100 `
 //    .\orderApiTestScript.js
 

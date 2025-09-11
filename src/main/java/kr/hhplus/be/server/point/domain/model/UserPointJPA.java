@@ -18,6 +18,7 @@ public class UserPointJPA {
     private long updateMillis;
 
     public static UserPointJPA empty(Long userId) {
+
         return new UserPointJPA(userId, 0L, System.currentTimeMillis());
     }
 
