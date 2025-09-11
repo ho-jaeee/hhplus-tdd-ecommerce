@@ -1,9 +1,11 @@
 package kr.hhplus.be.server.order.pollicy;
 
 import kr.hhplus.be.server.order.usecase.dto.OrderItemCommand;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class OrderPriceCalculator {
 
     private OrderPriceCalculator() {

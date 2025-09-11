@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.database.coupon;
 
-import kr.hhplus.be.server.coupon.domain.model.CouponUserJPA;
+import kr.hhplus.be.server.couponRedis.domain.model.CouponUserJPA;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
